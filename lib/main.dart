@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:ibox/config/theme/app_theme.dart';
 import 'package:ibox/features/dashboard/views/dashboard_screen.dart';
 
@@ -29,7 +30,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       theme: AppTheme.themeData,
       home: const DashboardScreen(),
     );

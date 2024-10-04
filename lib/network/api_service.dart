@@ -19,8 +19,6 @@ class ApiService {
     return response;
   }
 
-
-
   // POST request
   Future<Response> post(String endpoint, bool isToken, {required Map<String, dynamic> body}) async {
     var url = Uri.parse(baseUrl + endpoint);
@@ -29,8 +27,6 @@ class ApiService {
     var response = await client.post(url, headers: getHeaders(isToken), body: jsonEncode(body));
     return response;
   }
-
-
 
   // Custom URL GET request
   Future<Response> customGet(String urlStr, bool isToken) async {
@@ -46,7 +42,7 @@ class ApiService {
       return {
         "Content-Type": "application/json",
         "Accept": "application/json",
-        'Authorization' : 'Bearer ${const String.fromEnvironment('API_URL', defaultValue: '')}'
+        'Authorization' : 'Bearer ${const String.fromEnvironment('API_KEY', defaultValue: '')}'
       };
     }else{
       return {

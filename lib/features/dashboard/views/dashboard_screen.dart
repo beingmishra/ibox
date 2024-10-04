@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:ibox/config/theme/app_colors.dart';
-import 'package:ibox/features/home/views/home_screen.dart';
-import 'package:ibox/features/search/views/search_screen.dart';
+import 'package:ibox/features/home/controller/home_controller.dart';
+import 'package:ibox/features/home/view/home_screen.dart';
+import 'package:ibox/features/search/view/search_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -22,7 +24,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: screens[selectedIndex],
+      body: IndexedStack(
+        index: selectedIndex,
+        children: screens,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
         onTap: (index) {
