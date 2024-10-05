@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_common/get_reset.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibox/config/helpers/common_widgets.dart';
+import 'package:ibox/config/helpers/gener_helper.dart';
 import 'package:ibox/config/theme/app_colors.dart';
+import 'package:ibox/features/home/models/trending_media_response.dart';
+import 'package:ibox/network/url_helper.dart';
 
 class BigSliderCard extends StatelessWidget {
-  const BigSliderCard({super.key});
+  final TrendingMediaItem data;
+  const BigSliderCard({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
+    print(data.toJson());
     var size = MediaQuery.sizeOf(context);
     return SizedBox(
       height: size.height * 0.65,
@@ -15,7 +22,7 @@ class BigSliderCard extends StatelessWidget {
       child: Stack(
         children: [
           Image.network(
-            "https://m.media-amazon.com/images/S/pv-target-images/f0535dd61f56bddd6ee7f3bfb765645e45d78f373418ae37ee5103cf6eebbff0.jpg",
+            UrlHelper.imageUrl + data.posterPath,
             fit: BoxFit.cover,
             height: size.height * 0.65,
             width: size.width,
@@ -57,14 +64,14 @@ class BigSliderCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(100),
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          child: Text("Movie", style: GoogleFonts.rubik(fontSize: 12),),
+                          child: Text(data.mediaType.capitalizeFirst ?? "-", style: GoogleFonts.rubik(fontSize: 12),),
                         ),
                         verticalGap(12),
-                        Text("Avatar : The Way of Water", style: GoogleFonts.rubik(fontSize: 28, fontWeight: FontWeight.w600),),
+                        Text(data.title ?? data.name ?? "-", style: GoogleFonts.rubik(fontSize: 28, fontWeight: FontWeight.w600),),
                         verticalGap(12),
                         Row(
                           children: [
-                            Text("2023", style: GoogleFonts.rubik(fontSize: 12)),
+                            Text((data.releaseDate?.year ?? data.firstAirDate?.year ?? "-").toString(), style: GoogleFonts.rubik(fontSize: 12)),
                             horizontalGap(8),
                             Container(
                               height: 6,
@@ -75,18 +82,10 @@ class BigSliderCard extends StatelessWidget {
                               ),
                             ),
                             horizontalGap(8),
-                            Text("Sci-Fi, Action", style: GoogleFonts.rubik(fontSize: 12)),
-                            horizontalGap(8),
-                            Container(
-                              height: 6,
-                              width: 6,
-                              decoration: BoxDecoration(
-                                  color: Colors.grey.shade300,
-                                  borderRadius: BorderRadius.circular(100)
-                              ),
-                            ),
-                            horizontalGap(8),
-                            Text("2h30m", style: GoogleFonts.rubik(fontSize: 12)),
+                            Expanded(child: Text(getGenresByIds(data.genreIds, data.mediaType),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.rubik(fontSize: 12))),
                           ],
                         )
                       ],

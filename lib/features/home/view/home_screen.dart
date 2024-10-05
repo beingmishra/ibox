@@ -7,6 +7,7 @@ import 'package:ibox/config/widgets/movie_card.dart';
 import 'package:ibox/features/home/controller/home_controller.dart';
 import 'package:ibox/features/home/widgets/big_slider_card.dart';
 import 'package:ibox/features/home/widgets/skeleton_home_screen.dart';
+import 'package:ibox/network/url_helper.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var controller = Get.put(HomeController());
   bool isLoading = false;
+  final pageController = PageController();
 
   @override
   void initState() {
@@ -30,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
     return Scaffold(
-      body: isLoading ? SkeletonHomeScreen() : SingleChildScrollView(
+      body: isLoading ? const SkeletonHomeScreen() : SingleChildScrollView(
         child: Column(
           children: [
             buildTrendingSlider(size),
@@ -56,14 +58,11 @@ class _HomeScreenState extends State<HomeScreen> {
       isLoading = true;
     });
 
-    /*await Future.wait([
-      controller.fetchTrendingMedia(),
-      controller.fetchMovieNowPlaying(),
-      controller.fetchMoviePopular(),
-      controller.fetchTvAiringToday(),
-      controller.fetchTvPopular(),
-    ]);*/
-    await Future.delayed(Duration(seconds: 3));
+    await controller.fetchTrendingMedia();
+    await controller.fetchMovieNowPlaying();
+    await controller.fetchMoviePopular();
+    await controller.fetchTvAiringToday();
+    await controller.fetchTvPopular();
 
     setState(() {
       isLoading = false;
@@ -75,15 +74,9 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         SizedBox(
           height: size.height * 0.65,
-          child: Skeleton.leaf(
-            enabled: isLoading,
-            child: ListView.builder(
-                itemCount: 5,
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return const BigSliderCard();
-                }),
+          child: PageView(
+            controller: pageController,
+            children: List.generate(controller.trendingMediaItems.take(7).length, (index) => BigSliderCard(data: controller.trendingMediaItems[index],)),
           ),
         ),
         const Divider(
@@ -95,6 +88,46 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   buildMostPopularMovies(Size size) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "Now Playing (Movies)",
+              style:
+                  GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            Text(
+              "View all",
+              style:
+                  GoogleFonts.rubik(fontSize: 14, color: AppColors.hintColor),
+            ),
+          ],
+        ),
+        verticalGap(16),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Wrap(
+            spacing: 12,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            direction: Axis.horizontal,
+            runAlignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.start,
+            runSpacing: 12,
+            children: List.generate(controller.movieNowPlayingItems.length, (index) => MovieCard(
+                image: UrlHelper.imageUrl + controller.movieNowPlayingItems[index].posterPath,
+                name: controller.movieNowPlayingItems[index].title,
+                id:  controller.movieNowPlayingItems[index].id, mediaType: "movie")),
+          ),
+        ),
+        verticalGap(32),
+      ],
+    );
+  }
+
+  buildTopRatedMovies(Size size) {
     return Column(
       children: [
         Row(
@@ -123,44 +156,10 @@ class _HomeScreenState extends State<HomeScreen> {
             runAlignment: WrapAlignment.start,
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 12,
-            children: List.generate(5, (index) => const MovieCard()),
-          ),
-        ),
-        verticalGap(32),
-      ],
-    );
-  }
-
-  buildTopRatedMovies(Size size) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "Top Rated (Movies)",
-              style:
-                  GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            Text(
-              "View all",
-              style:
-                  GoogleFonts.rubik(fontSize: 14, color: AppColors.hintColor),
-            ),
-          ],
-        ),
-        verticalGap(16),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Wrap(
-            spacing: 12,
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            direction: Axis.horizontal,
-            runAlignment: WrapAlignment.start,
-            crossAxisAlignment: WrapCrossAlignment.start,
-            runSpacing: 12,
-            children: List.generate(5, (index) => const MovieCard()),
+            children: List.generate(controller.moviePopularItems.length, (index) => MovieCard(
+                image: UrlHelper.imageUrl + controller.moviePopularItems[index].posterPath,
+                name: controller.moviePopularItems[index].title,
+                id:  controller.moviePopularItems[index].id, mediaType: "movie")),
           ),
         ),
         verticalGap(32),
@@ -197,7 +196,10 @@ class _HomeScreenState extends State<HomeScreen> {
             runAlignment: WrapAlignment.start,
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 12,
-            children: List.generate(5, (index) => const MovieCard()),
+            children: List.generate(controller.tvAiringTodayItems.length, (index) => MovieCard(
+                image: UrlHelper.imageUrl + controller.tvAiringTodayItems[index].posterPath,
+                name: controller.tvAiringTodayItems[index].name,
+                id:  controller.tvAiringTodayItems[index].id, mediaType: "tv")),
           ),
         ),
         verticalGap(32),
@@ -234,7 +236,10 @@ class _HomeScreenState extends State<HomeScreen> {
             runAlignment: WrapAlignment.start,
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 12,
-            children: List.generate(5, (index) => const MovieCard()),
+            children: List.generate(controller.tvPopularItems.length, (index) => MovieCard(
+                image: UrlHelper.imageUrl + controller.tvPopularItems[index].posterPath,
+                name: controller.tvPopularItems[index].name,
+                id:  controller.tvPopularItems[index].id, mediaType: "tv")),
           ),
         ),
         verticalGap(32),

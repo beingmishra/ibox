@@ -1,29 +1,29 @@
 // To parse this JSON data, do
 //
-//     final trendingMediaResponse = trendingMediaResponseFromJson(jsonString);
+//     final movieRecommendationResponseModel = movieRecommendationResponseModelFromJson(jsonString);
 
 import 'dart:convert';
 
-TrendingMediaResponse trendingMediaResponseFromJson(String str) => TrendingMediaResponse.fromJson(json.decode(str));
+MovieRecommendationResponseModel movieRecommendationResponseModelFromJson(String str) => MovieRecommendationResponseModel.fromJson(json.decode(str));
 
-String trendingMediaResponseToJson(TrendingMediaResponse data) => json.encode(data.toJson());
+String movieRecommendationResponseModelToJson(MovieRecommendationResponseModel data) => json.encode(data.toJson());
 
-class TrendingMediaResponse {
+class MovieRecommendationResponseModel {
   int page;
-  List<TrendingMediaItem> results;
+  List<Result> results;
   int totalPages;
   int totalResults;
 
-  TrendingMediaResponse({
+  MovieRecommendationResponseModel({
     required this.page,
     required this.results,
     required this.totalPages,
     required this.totalResults,
   });
 
-  factory TrendingMediaResponse.fromJson(Map<String, dynamic> json) => TrendingMediaResponse(
+  factory MovieRecommendationResponseModel.fromJson(Map<String, dynamic> json) => MovieRecommendationResponseModel(
     page: json["page"],
-    results: List<TrendingMediaItem>.from(json["results"].map((x) => TrendingMediaItem.fromJson(x))),
+    results: List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
     totalPages: json["total_pages"],
     totalResults: json["total_results"],
   );
@@ -36,11 +36,11 @@ class TrendingMediaResponse {
   };
 }
 
-class TrendingMediaItem {
+class Result {
   String backdropPath;
   int id;
-  String? title;
-  String? originalTitle;
+  String title;
+  String originalTitle;
   String overview;
   String posterPath;
   String mediaType;
@@ -48,20 +48,16 @@ class TrendingMediaItem {
   String originalLanguage;
   List<int> genreIds;
   double popularity;
-  DateTime? releaseDate;
-  bool? video;
+  DateTime releaseDate;
+  bool video;
   double voteAverage;
   int voteCount;
-  String? name;
-  String? originalName;
-  DateTime? firstAirDate;
-  List<String>? originCountry;
 
-  TrendingMediaItem({
+  Result({
     required this.backdropPath,
     required this.id,
-    this.title,
-    this.originalTitle,
+    required this.title,
+    required this.originalTitle,
     required this.overview,
     required this.posterPath,
     required this.mediaType,
@@ -69,17 +65,13 @@ class TrendingMediaItem {
     required this.originalLanguage,
     required this.genreIds,
     required this.popularity,
-    this.releaseDate,
-    this.video,
+    required this.releaseDate,
+    required this.video,
     required this.voteAverage,
     required this.voteCount,
-    this.name,
-    this.originalName,
-    this.firstAirDate,
-    this.originCountry,
   });
 
-  factory TrendingMediaItem.fromJson(Map<String, dynamic> json) => TrendingMediaItem(
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
     backdropPath: json["backdrop_path"],
     id: json["id"],
     title: json["title"],
@@ -91,14 +83,10 @@ class TrendingMediaItem {
     originalLanguage: json["original_language"],
     genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
     popularity: json["popularity"]?.toDouble(),
-    releaseDate: json["release_date"] == null ? null : DateTime.parse(json["release_date"]),
+    releaseDate: DateTime.parse(json["release_date"]),
     video: json["video"],
     voteAverage: json["vote_average"]?.toDouble(),
     voteCount: json["vote_count"],
-    name: json["name"],
-    originalName: json["original_name"],
-    firstAirDate: json["first_air_date"] == null ? null : DateTime.parse(json["first_air_date"]),
-    originCountry: json["origin_country"] == null ? [] : List<String>.from(json["origin_country"]!.map((x) => x)),
   );
 
   Map<String, dynamic> toJson() => {
@@ -113,13 +101,9 @@ class TrendingMediaItem {
     "original_language": originalLanguage,
     "genre_ids": List<dynamic>.from(genreIds.map((x) => x)),
     "popularity": popularity,
-    "release_date": releaseDate == null ? "" : "${releaseDate!.year.toString().padLeft(4, '0')}-${releaseDate!.month.toString().padLeft(2, '0')}-${releaseDate!.day.toString().padLeft(2, '0')}",
+    "release_date": "${releaseDate.year.toString().padLeft(4, '0')}-${releaseDate.month.toString().padLeft(2, '0')}-${releaseDate.day.toString().padLeft(2, '0')}",
     "video": video,
     "vote_average": voteAverage,
     "vote_count": voteCount,
-    "name": name,
-    "original_name": originalName,
-    "first_air_date": firstAirDate == null ? "" : "${firstAirDate!.year.toString().padLeft(4, '0')}-${firstAirDate!.month.toString().padLeft(2, '0')}-${firstAirDate!.day.toString().padLeft(2, '0')}",
-    "origin_country": originCountry == null ? [] : List<dynamic>.from(originCountry!.map((x) => x)),
   };
 }

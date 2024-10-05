@@ -11,7 +11,7 @@ class SearchItemCard extends StatelessWidget {
     var size = MediaQuery.sizeOf(context);
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => MovieDetailScreen()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MovieDetailScreen(id: 0,)));
       },
       child: Row(
         children: [

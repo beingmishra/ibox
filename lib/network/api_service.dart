@@ -16,6 +16,7 @@ class ApiService {
     var url = Uri.parse(baseUrl + endpoint);
     var response = await client.get(url, headers: getHeaders(isToken));
     log('Url is >>>>>>> $url');
+    log('Response is >>>>>>> ${response.body}');
     return response;
   }
 

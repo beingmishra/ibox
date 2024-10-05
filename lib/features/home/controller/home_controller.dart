@@ -17,7 +17,9 @@ class HomeController extends GetxController {
   Future<void> fetchTrendingMedia() async {
     var response = await apiService.get(UrlHelper.trendingMedia, true);
     var trendingMedia = trendingMediaResponseFromJson(response.body);
+    trendingMediaItems.clear();
     trendingMediaItems.addAll(trendingMedia.results);
+    trendingMediaItems.shuffle();
   }
 
   Future<void> fetchMovieNowPlaying() async {
@@ -39,7 +41,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> fetchTvPopular() async {
-    var response = await apiService.get(UrlHelper.tvAiringToday, true);
+    var response = await apiService.get(UrlHelper.tvPopular, true);
     var tvRes = tvResponseFromJson(response.body);
     tvPopularItems.addAll(tvRes.results);
   }

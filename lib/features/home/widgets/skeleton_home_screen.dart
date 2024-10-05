@@ -19,6 +19,14 @@ class SkeletonHomeScreen extends StatelessWidget {
                 child: Stack(
                   alignment: Alignment.bottomCenter,
                   children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          color: const Color(0xFF3A3A3A),
+                          borderRadius: BorderRadius.circular(16)
+                      ),
+                      height: size.height * 0.65,
+                      width: size.width,
+                    ),
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
@@ -50,21 +58,21 @@ class SkeletonHomeScreen extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Bone.text(words: 2),
+                                  const Bone.text(words: 2),
                                   verticalGap(12),
-                                  Bone.text(words: 4),
+                                  const Bone.text(words: 4),
                                   verticalGap(12),
                                   Row(
                                     children: [
-                                      Bone.text(words: 1),
+                                      const Bone.text(words: 1),
                                       horizontalGap(8),
-                                      Bone.circle(size: 6),
+                                      const Bone.circle(size: 6),
                                       horizontalGap(8),
-                                      Bone.text(words: 1),
+                                      const Bone.text(words: 1),
                                       horizontalGap(8),
-                                      Bone.circle(size: 6),
+                                      const Bone.circle(size: 6),
                                       horizontalGap(8),
-                                      Bone.text(words: 1),
+                                      const Bone.text(words: 1),
                                     ],
                                   )
                                 ],
@@ -78,7 +86,7 @@ class SkeletonHomeScreen extends StatelessWidget {
                               margin: const EdgeInsets.symmetric(horizontal: 12),
                               height: 42,
                               width: 42,
-                              child: Bone.icon(size: 28,),),
+                              child: const Bone.icon(size: 28,),),
                           ],
                         ),
                       ),
@@ -91,10 +99,10 @@ class SkeletonHomeScreen extends StatelessWidget {
                 endIndent: 16,
               ),
               Padding(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -103,34 +111,48 @@ class SkeletonHomeScreen extends StatelessWidget {
                     ),
                     verticalGap(16),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Column(
                           children: [
                             Container(
+                              decoration: BoxDecoration(
+                                  color: const Color(0xFF3A3A3A),
+                                  borderRadius: BorderRadius.circular(16)
+                              ),
                               height: 180,
-                              width: size.width * 0.3,
+                              width: size.width * 0.28,
                             ),
-                            Bone.text(words: 3,)
+                            const Bone.text(words: 1,)
                           ],
                         ),
                         Column(
                           children: [
                             Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF3A3A3A),
+                                borderRadius: BorderRadius.circular(16)
+                              ),
                               height: 180,
-                              width: size.width * 0.3,
+                              width: size.width * 0.28,
                             ),
-                            Bone.text(words: 3,)
+                            const Bone.text(words: 1,)
                           ],
                         ),
                         Column(
                           children: [
                             Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF3A3A3A),
+                                borderRadius: BorderRadius.circular(16)
+                              ),
                               height: 180,
-                              width: size.width * 0.3,
+                              width: size.width * 0.28,
                             ),
-                            Bone.text(words: 3,)
+                            const Bone.text(words: 1,)
                           ],
                         ),
+
                       ],
                     ),
                     verticalGap(32),

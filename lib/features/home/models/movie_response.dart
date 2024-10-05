@@ -9,7 +9,7 @@ MovieResponse movieResponseFromJson(String str) => MovieResponse.fromJson(json.d
 String movieResponseToJson(MovieResponse data) => json.encode(data.toJson());
 
 class MovieResponse {
-  Dates dates;
+  Dates? dates;
   int page;
   List<MovieItem> results;
   int totalPages;
@@ -24,7 +24,7 @@ class MovieResponse {
   });
 
   factory MovieResponse.fromJson(Map<String, dynamic> json) => MovieResponse(
-    dates: Dates.fromJson(json["dates"]),
+    dates: json["dates"] == null ? null : Dates.fromJson(json["dates"]),
     page: json["page"],
     results: List<MovieItem>.from(json["results"].map((x) => MovieItem.fromJson(x))),
     totalPages: json["total_pages"],
@@ -32,7 +32,7 @@ class MovieResponse {
   );
 
   Map<String, dynamic> toJson() => {
-    "dates": dates.toJson(),
+    "dates": dates?.toJson(),
     "page": page,
     "results": List<dynamic>.from(results.map((x) => x.toJson())),
     "total_pages": totalPages,

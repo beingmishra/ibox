@@ -1,21 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibox/config/helpers/common_widgets.dart';
+import 'package:ibox/config/helpers/gener_helper.dart';
 import 'package:ibox/config/theme/app_colors.dart';
+import 'package:ibox/config/widgets/movie_card.dart';
+import 'package:ibox/config/widgets/no_data_widget.dart';
+import 'package:ibox/features/detail/controllers/movie_detail_controller.dart';
+import 'package:ibox/features/detail/widgets/skeleton_detail_page.dart';
+import 'package:ibox/network/url_helper.dart';
 
 class MovieDetailScreen extends StatefulWidget {
-  const MovieDetailScreen({super.key});
+  final int id;
+  const MovieDetailScreen({super.key, required this.id});
 
   @override
   State<MovieDetailScreen> createState() => _MovieDetailScreenState();
 }
 
 class _MovieDetailScreenState extends State<MovieDetailScreen> {
+
+  final controller = Get.put(MovieDetailController());
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
     return Scaffold(
-      body: SingleChildScrollView(
+      body: isLoading ? const SkeletonDetailPage() : controller.movieDetail == null ?
+            const NoDataWidget()
+          : SingleChildScrollView(
         child: Stack(
           children: [
             buildTopHeader(size),
@@ -30,7 +50,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                           fontSize: 18, fontWeight: FontWeight.w600)),
                   verticalGap(8),
                   Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pharetra nibh eros, at aliquet nisi volutpat vel. Praesent blandit pellentesque gravida. Ut sapien mi, venenatis a imperdiet ut, hendrerit id libero. Fusce non egestas odio. Nulla accumsan accumsan felis, ac tincidunt justo gravida a. Nunc maximus risus eu sodales vulputate. Morbi at dolor commodo, molestie lectus sit amet, scelerisque velit. Morbi ultrices sit amet justo id aliquam. Praesent eleifend lacus vel pellentesque dictum. Nulla purus dolor, facilisis quis congue at, dictum a elit. Aliquam erat volutpat. Pellentesque dui augue, consequat non molestie non, laoreet id dui. Phasellus ligula risus, auctor ut elementum dapibus, mattis id dolor. Cras rhoncus orci malesuada imperdiet ullamcorper. ",
+                      controller.movieDetail!.overview,
                       style: GoogleFonts.rubik(
                           color: AppColors.textSecondaryColor)),
                   verticalGap(24),
@@ -47,7 +67,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                       runAlignment: WrapAlignment.start,
                       crossAxisAlignment: WrapCrossAlignment.start,
                       runSpacing: 12,
-                      children: List.generate(5, (index) => SizedBox(
+                      children: List.generate(controller.movieCredits!.cast.length, (index) => SizedBox(
                                 width: 64,
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -55,20 +75,27 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(100),
                                       child: Image.network(
-                                        "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQEuinbzGY804xwljtLiC3yIw9YhgqtJCnhhqaPisZNC2buRdgj",
+                                        UrlHelper.imageUrl + (controller.movieCredits!.cast[index].profilePath ?? ""),
                                         height: 64,
                                         width: 64,
                                         fit: BoxFit.cover,
                                       ),
                                     ),
                                     verticalGap(8),
-                                    Text("Sam Worthington",
+                                    Text(controller.movieCredits!.cast[index].name,
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.rubik(fontSize: 14)),
+                                    verticalGap(4),
+                                    Text("(${controller.movieCredits!.cast[index].character})",
+                                        textAlign: TextAlign.center,
                                         style: GoogleFonts.rubik(fontSize: 14)),
                                   ],
                                 ),
                               )),
                     ),
-                  )
+                  ),
+                  verticalGap(24),
+                  buildRecommendations(size),
                 ],
               ),
             ),
@@ -85,7 +112,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
       child: Stack(
         children: [
           Image.network(
-            "https://m.media-amazon.com/images/S/pv-target-images/f0535dd61f56bddd6ee7f3bfb765645e45d78f373418ae37ee5103cf6eebbff0.jpg",
+            UrlHelper.imageUrl + controller.movieDetail!.posterPath,
             fit: BoxFit.cover,
             height: size.height * 0.55,
             width: size.width,
@@ -135,7 +162,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                   ),
                   verticalGap(12),
                   Text(
-                    "Avatar : The Way of Water",
+                    controller.movieDetail!.title,
                     style: GoogleFonts.rubik(
                         fontSize: 22, fontWeight: FontWeight.w600),
                   ),
@@ -143,7 +170,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("2023", style: GoogleFonts.rubik(fontSize: 12)),
+                      Text(controller.movieDetail!.releaseDate.year.toString(), style: GoogleFonts.rubik(fontSize: 12)),
                       horizontalGap(8),
                       Container(
                         height: 6,
@@ -153,33 +180,23 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                             borderRadius: BorderRadius.circular(100)),
                       ),
                       horizontalGap(8),
-                      Text("Sci-Fi, Action",
+                      Text(genreStringFromObj(controller.movieDetail!.genres),
                           style: GoogleFonts.rubik(fontSize: 12)),
-                      horizontalGap(8),
-                      Container(
-                        height: 6,
-                        width: 6,
-                        decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(100)),
-                      ),
-                      horizontalGap(8),
-                      Text("2h30m", style: GoogleFonts.rubik(fontSize: 12)),
                     ],
                   ),
                   verticalGap(12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.star,
                         color: Colors.amber,
                         size: 20,
                       ),
                       horizontalGap(4),
-                      Text("4.2", style: GoogleFonts.rubik(fontSize: 12)),
+                      Text(controller.movieDetail!.voteAverage.toStringAsFixed(1), style: GoogleFonts.rubik(fontSize: 12)),
                       horizontalGap(4),
-                      Text("(128 reviews)",
+                      Text("(${controller.movieDetail!.voteCount} reviews)",
                           style: GoogleFonts.rubik(
                               fontSize: 12,
                               color: AppColors.textSecondaryColor)),
@@ -192,5 +209,49 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         ],
       ),
     );
+  }
+
+  buildRecommendations(Size size) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Recommendations",
+          style:
+          GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
+        ),
+        verticalGap(16),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Wrap(
+            spacing: 12,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            direction: Axis.horizontal,
+            runAlignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.start,
+            runSpacing: 12,
+            children: List.generate(controller.movieRecommendations!.results.length, (index) => MovieCard(
+                image: UrlHelper.imageUrl + controller.movieRecommendations!.results[index].posterPath,
+                name: controller.movieRecommendations!.results[index].title,
+                id:  controller.movieRecommendations!.results[index].id, mediaType: "movie")),
+          ),
+        ),
+        verticalGap(32),
+      ],
+    );
+  }
+
+  Future<void> fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await controller.fetchMovieDetail(widget.id);
+    await controller.fetchMovieCredits(widget.id);
+    await controller.fetchMovieRecommendations(widget.id);
+
+    setState(() {
+      isLoading = false;
+    });
   }
 }

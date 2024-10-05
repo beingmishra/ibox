@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:ibox/config/theme/app_colors.dart';
-import 'package:ibox/features/home/controller/home_controller.dart';
 import 'package:ibox/features/home/view/home_screen.dart';
 import 'package:ibox/features/search/view/search_screen.dart';
 
@@ -18,7 +16,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   var screens = [
     const HomeScreen(),
     const SearchScreen(),
-    const HomeScreen()
+    Container()
   ];
 
   @override

@@ -1,29 +1,29 @@
 // To parse this JSON data, do
 //
-//     final tvResponse = tvResponseFromJson(jsonString);
+//     final tvSimilarResponseModel = tvSimilarResponseModelFromJson(jsonString);
 
 import 'dart:convert';
 
-TvResponse tvResponseFromJson(String str) => TvResponse.fromJson(json.decode(str));
+TvSimilarResponseModel tvSimilarResponseModelFromJson(String str) => TvSimilarResponseModel.fromJson(json.decode(str));
 
-String tvResponseToJson(TvResponse data) => json.encode(data.toJson());
+String tvSimilarResponseModelToJson(TvSimilarResponseModel data) => json.encode(data.toJson());
 
-class TvResponse {
+class TvSimilarResponseModel {
   int page;
-  List<TvResponseItem> results;
+  List<Result> results;
   int totalPages;
   int totalResults;
 
-  TvResponse({
+  TvSimilarResponseModel({
     required this.page,
     required this.results,
     required this.totalPages,
     required this.totalResults,
   });
 
-  factory TvResponse.fromJson(Map<String, dynamic> json) => TvResponse(
+  factory TvSimilarResponseModel.fromJson(Map<String, dynamic> json) => TvSimilarResponseModel(
     page: json["page"],
-    results: List<TvResponseItem>.from(json["results"].map((x) => TvResponseItem.fromJson(x))),
+    results: List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
     totalPages: json["total_pages"],
     totalResults: json["total_results"],
   );
@@ -36,7 +36,7 @@ class TvResponse {
   };
 }
 
-class TvResponseItem {
+class Result {
   bool adult;
   String? backdropPath;
   List<int> genreIds;
@@ -47,12 +47,12 @@ class TvResponseItem {
   String overview;
   double popularity;
   String posterPath;
-  DateTime? firstAirDate;
+  DateTime firstAirDate;
   String name;
   double voteAverage;
   int voteCount;
 
-  TvResponseItem({
+  Result({
     required this.adult,
     required this.backdropPath,
     required this.genreIds,
@@ -69,7 +69,7 @@ class TvResponseItem {
     required this.voteCount,
   });
 
-  factory TvResponseItem.fromJson(Map<String, dynamic> json) => TvResponseItem(
+  factory Result.fromJson(Map<String, dynamic> json) => Result(
     adult: json["adult"],
     backdropPath: json["backdrop_path"],
     genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
@@ -80,7 +80,7 @@ class TvResponseItem {
     overview: json["overview"],
     popularity: json["popularity"]?.toDouble(),
     posterPath: json["poster_path"],
-    firstAirDate: json["first_air_date"] == null || json["first_air_date"] == "" ? null : DateTime.parse(json["first_air_date"]),
+    firstAirDate: DateTime.parse(json["first_air_date"]),
     name: json["name"],
     voteAverage: json["vote_average"]?.toDouble(),
     voteCount: json["vote_count"],
@@ -97,7 +97,7 @@ class TvResponseItem {
     "overview": overview,
     "popularity": popularity,
     "poster_path": posterPath,
-    "first_air_date": "${firstAirDate?.year.toString().padLeft(4, '0')}-${firstAirDate?.month.toString().padLeft(2, '0')}-${firstAirDate?.day.toString().padLeft(2, '0')}",
+    "first_air_date": "${firstAirDate.year.toString().padLeft(4, '0')}-${firstAirDate.month.toString().padLeft(2, '0')}-${firstAirDate.day.toString().padLeft(2, '0')}",
     "name": name,
     "vote_average": voteAverage,
     "vote_count": voteCount,
