@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibox/config/helpers/common_widgets.dart';
 import 'package:ibox/config/helpers/gener_helper.dart';
+import 'package:ibox/config/helpers/general_functions.dart';
 import 'package:ibox/config/theme/app_colors.dart';
 import 'package:ibox/config/widgets/movie_card.dart';
 import 'package:ibox/config/widgets/no_data_widget.dart';
 import 'package:ibox/features/detail/controllers/tv_detail_controller.dart';
 import 'package:ibox/features/detail/widgets/skeleton_detail_page.dart';
+import 'package:ibox/features/people/views/people_info_screen.dart';
 import 'package:ibox/network/url_helper.dart';
 
 class TvDetailScreen extends StatefulWidget {
@@ -32,6 +34,11 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      extendBodyBehindAppBar: true,
       body: isLoading
           ? const SkeletonDetailPage()
           : controller.tvDetail == null
@@ -68,43 +75,43 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
                                 crossAxisAlignment: WrapCrossAlignment.start,
                                 runSpacing: 12,
                                 children: List.generate(
-                                    controller.tvCredits!.cast.length,
-                                    (index) => SizedBox(
-                                          width: 64,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(100),
-                                                child: Image.network(
-                                                  UrlHelper.imageUrl +
-                                                      (controller
-                                                              .tvCredits!
-                                                              .cast[index]
-                                                              .profilePath ??
-                                                          ""),
-                                                  height: 64,
-                                                  width: 64,
-                                                  fit: BoxFit.cover,
+                                    controller.tvDetail!.credits.cast.length,
+                                    (index) => InkWell(
+                                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PeopleInfoScreen(id: controller.tvDetail!
+                                          .credits.cast[index].id))),
+                                      child: SizedBox(
+                                            width: 64,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(100),
+                                                  child: Image.network(
+                                                    getImageUrl(controller.tvDetail!.credits.cast[index].profilePath, "person"),
+                                                    height: 64,
+                                                    width: 64,
+                                                    fit: BoxFit.cover,
+                                                  ),
                                                 ),
-                                              ),
-                                              verticalGap(8),
-                                              Text(
-                                                  controller.tvCredits!
-                                                      .cast[index].name,
-                                                  textAlign: TextAlign.center,
-                                                  style: GoogleFonts.rubik(
-                                                      fontSize: 14)),
-                                              verticalGap(4),
-                                              Text(
-                                                  "(${controller.tvCredits!.cast[index].character})",
-                                                  textAlign: TextAlign.center,
-                                                  style: GoogleFonts.rubik(
-                                                      fontSize: 14)),
-                                            ],
+                                                verticalGap(8),
+                                                Text(
+                                                    controller.tvDetail!
+                                                        .credits.cast[index].name,
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts.rubik(
+                                                        fontSize: 14)),
+                                                verticalGap(4),
+                                                Text(
+                                                    "(${controller.tvDetail!
+                                                        .credits.cast[index].character})",
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts.rubik(
+                                                        fontSize: 14)),
+                                              ],
+                                            ),
                                           ),
-                                        )),
+                                    )),
                               ),
                             ),
                             verticalGap(24),
@@ -158,7 +165,7 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
       child: Stack(
         children: [
           Image.network(
-            UrlHelper.imageUrl + controller.tvDetail!.posterPath,
+           getImageUrl(controller.tvDetail!.posterPath, "media"),
             fit: BoxFit.cover,
             height: size.height * 0.55,
             width: size.width,
@@ -260,7 +267,7 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
   }
 
   buildRecommendations(Size size) {
-    return Column(
+    return controller.tvDetail!.similar.results.isEmpty ? const SizedBox() : Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -278,12 +285,11 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 12,
             children: List.generate(
-                controller.tvRecommendations!.results.length,
+                controller.tvDetail!.similar.results.length,
                 (index) => MovieCard(
-                    image: UrlHelper.imageUrl +
-                        controller.tvRecommendations!.results[index].posterPath,
-                    name: controller.tvRecommendations!.results[index].name,
-                    id: controller.tvRecommendations!.results[index].id,
+                    image: getImageUrl(controller.tvDetail!.similar.results[index].posterPath, "media"),
+                    name: controller.tvDetail!.similar.results[index].name,
+                    id: controller.tvDetail!.similar.results[index].id,
                     mediaType: "tv")),
           ),
         ),
@@ -298,8 +304,6 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
     });
 
     await controller.fetchTvDetail(widget.id);
-    await controller.fetchTvCredits(widget.id);
-    await controller.fetchTvRecommendations(widget.id);
 
     setState(() {
       isLoading = false;

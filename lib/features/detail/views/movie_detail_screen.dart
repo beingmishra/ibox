@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibox/config/helpers/common_widgets.dart';
 import 'package:ibox/config/helpers/gener_helper.dart';
+import 'package:ibox/config/helpers/general_functions.dart';
 import 'package:ibox/config/theme/app_colors.dart';
 import 'package:ibox/config/widgets/movie_card.dart';
 import 'package:ibox/config/widgets/no_data_widget.dart';
 import 'package:ibox/features/detail/controllers/movie_detail_controller.dart';
 import 'package:ibox/features/detail/widgets/skeleton_detail_page.dart';
+import 'package:ibox/features/people/views/people_info_screen.dart';
 import 'package:ibox/network/url_helper.dart';
 
 class MovieDetailScreen extends StatefulWidget {
@@ -33,6 +35,11 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      extendBodyBehindAppBar: true,
       body: isLoading ? const SkeletonDetailPage() : controller.movieDetail == null ?
             const NoDataWidget()
           : SingleChildScrollView(
@@ -67,31 +74,34 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                       runAlignment: WrapAlignment.start,
                       crossAxisAlignment: WrapCrossAlignment.start,
                       runSpacing: 12,
-                      children: List.generate(controller.movieCredits!.cast.length, (index) => SizedBox(
-                                width: 64,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(100),
-                                      child: Image.network(
-                                        UrlHelper.imageUrl + (controller.movieCredits!.cast[index].profilePath ?? ""),
-                                        height: 64,
-                                        width: 64,
-                                        fit: BoxFit.cover,
+                      children: List.generate(controller.movieCredits!.cast.length, (index) => InkWell(
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PeopleInfoScreen(id: controller.movieCredits!.cast[index].id,))),
+                        child: SizedBox(
+                                  width: 64,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(100),
+                                        child: Image.network(
+                                          getImageUrl(controller.movieCredits!.cast[index].profilePath, "person"),
+                                          height: 64,
+                                          width: 64,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
-                                    ),
-                                    verticalGap(8),
-                                    Text(controller.movieCredits!.cast[index].name,
-                                        textAlign: TextAlign.center,
-                                        style: GoogleFonts.rubik(fontSize: 14)),
-                                    verticalGap(4),
-                                    Text("(${controller.movieCredits!.cast[index].character})",
-                                        textAlign: TextAlign.center,
-                                        style: GoogleFonts.rubik(fontSize: 14)),
-                                  ],
+                                      verticalGap(8),
+                                      Text(controller.movieCredits!.cast[index].name,
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.rubik(fontSize: 14)),
+                                      verticalGap(4),
+                                      Text("(${controller.movieCredits!.cast[index].character})",
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.rubik(fontSize: 14)),
+                                    ],
+                                  ),
                                 ),
-                              )),
+                      )),
                     ),
                   ),
                   verticalGap(24),
@@ -112,7 +122,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
       child: Stack(
         children: [
           Image.network(
-            UrlHelper.imageUrl + controller.movieDetail!.posterPath,
+            getImageUrl(controller.movieDetail!.posterPath, "media"),
             fit: BoxFit.cover,
             height: size.height * 0.55,
             width: size.width,
@@ -170,7 +180,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(controller.movieDetail!.releaseDate.year.toString(), style: GoogleFonts.rubik(fontSize: 12)),
+                      Text((controller.movieDetail!.releaseDate?.year ?? "").toString(), style: GoogleFonts.rubik(fontSize: 12)),
                       horizontalGap(8),
                       Container(
                         height: 6,
@@ -231,7 +241,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 12,
             children: List.generate(controller.movieRecommendations!.results.length, (index) => MovieCard(
-                image: UrlHelper.imageUrl + controller.movieRecommendations!.results[index].posterPath,
+                image: getImageUrl(controller.movieRecommendations!.results[index].posterPath, "media"),
                 name: controller.movieRecommendations!.results[index].title,
                 id:  controller.movieRecommendations!.results[index].id, mediaType: "movie")),
           ),

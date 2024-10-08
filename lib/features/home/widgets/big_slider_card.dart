@@ -4,6 +4,7 @@ import 'package:get/get_common/get_reset.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibox/config/helpers/common_widgets.dart';
 import 'package:ibox/config/helpers/gener_helper.dart';
+import 'package:ibox/config/helpers/general_functions.dart';
 import 'package:ibox/config/theme/app_colors.dart';
 import 'package:ibox/features/home/models/trending_media_response.dart';
 import 'package:ibox/network/url_helper.dart';
@@ -22,7 +23,7 @@ class BigSliderCard extends StatelessWidget {
       child: Stack(
         children: [
           Image.network(
-            UrlHelper.imageUrl + data.posterPath,
+            getImageUrl(data.posterPath, "media"),
             fit: BoxFit.cover,
             height: size.height * 0.65,
             width: size.width,

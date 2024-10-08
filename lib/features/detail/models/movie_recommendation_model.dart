@@ -37,7 +37,7 @@ class MovieRecommendationResponseModel {
 }
 
 class Result {
-  String backdropPath;
+  String? backdropPath;
   int id;
   String title;
   String originalTitle;

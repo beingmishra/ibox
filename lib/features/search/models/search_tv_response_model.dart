@@ -1,29 +1,29 @@
 // To parse this JSON data, do
 //
-//     final tvSimilarResponseModel = tvSimilarResponseModelFromJson(jsonString);
+//     final searchTvResponseModel = searchTvResponseModelFromJson(jsonString);
 
 import 'dart:convert';
 
-TvSimilarResponseModel tvSimilarResponseModelFromJson(String str) => TvSimilarResponseModel.fromJson(json.decode(str));
+SearchTvResponseModel searchTvResponseModelFromJson(String str) => SearchTvResponseModel.fromJson(json.decode(str));
 
-String tvSimilarResponseModelToJson(TvSimilarResponseModel data) => json.encode(data.toJson());
+String searchTvResponseModelToJson(SearchTvResponseModel data) => json.encode(data.toJson());
 
-class TvSimilarResponseModel {
+class SearchTvResponseModel {
   int page;
-  List<Result> results;
+  List<SearchedTv> results;
   int totalPages;
   int totalResults;
 
-  TvSimilarResponseModel({
+  SearchTvResponseModel({
     required this.page,
     required this.results,
     required this.totalPages,
     required this.totalResults,
   });
 
-  factory TvSimilarResponseModel.fromJson(Map<String, dynamic> json) => TvSimilarResponseModel(
+  factory SearchTvResponseModel.fromJson(Map<String, dynamic> json) => SearchTvResponseModel(
     page: json["page"],
-    results: List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
+    results: List<SearchedTv>.from(json["results"].map((x) => SearchedTv.fromJson(x))),
     totalPages: json["total_pages"],
     totalResults: json["total_results"],
   );
@@ -36,7 +36,7 @@ class TvSimilarResponseModel {
   };
 }
 
-class Result {
+class SearchedTv {
   bool adult;
   String? backdropPath;
   List<int> genreIds;
@@ -46,13 +46,13 @@ class Result {
   String originalName;
   String overview;
   double popularity;
-  String? posterPath;
+  String posterPath;
   DateTime firstAirDate;
   String name;
   double voteAverage;
   int voteCount;
 
-  Result({
+  SearchedTv({
     required this.adult,
     required this.backdropPath,
     required this.genreIds,
@@ -69,7 +69,7 @@ class Result {
     required this.voteCount,
   });
 
-  factory Result.fromJson(Map<String, dynamic> json) => Result(
+  factory SearchedTv.fromJson(Map<String, dynamic> json) => SearchedTv(
     adult: json["adult"],
     backdropPath: json["backdrop_path"],
     genreIds: List<int>.from(json["genre_ids"].map((x) => x)),

@@ -10,7 +10,7 @@ String movieDetailResponseModelToJson(MovieDetailResponseModel data) => json.enc
 
 class MovieDetailResponseModel {
   bool adult;
-  String backdropPath;
+  String? backdropPath;
   dynamic belongsToCollection;
   int budget;
   List<GenreObj> genres;
@@ -22,10 +22,10 @@ class MovieDetailResponseModel {
   String originalTitle;
   String overview;
   double popularity;
-  String posterPath;
+  String? posterPath;
   List<ProductionCompany> productionCompanies;
   List<ProductionCountry> productionCountries;
-  DateTime releaseDate;
+  DateTime? releaseDate;
   int revenue;
   int runtime;
   List<SpokenLanguage> spokenLanguages;
@@ -82,7 +82,7 @@ class MovieDetailResponseModel {
     posterPath: json["poster_path"],
     productionCompanies: List<ProductionCompany>.from(json["production_companies"].map((x) => ProductionCompany.fromJson(x))),
     productionCountries: List<ProductionCountry>.from(json["production_countries"].map((x) => ProductionCountry.fromJson(x))),
-    releaseDate: DateTime.parse(json["release_date"]),
+    releaseDate: (json["release_date"] ?? "").isEmpty ? null : DateTime.parse(json["release_date"]),
     revenue: json["revenue"],
     runtime: json["runtime"],
     spokenLanguages: List<SpokenLanguage>.from(json["spoken_languages"].map((x) => SpokenLanguage.fromJson(x))),
@@ -111,7 +111,7 @@ class MovieDetailResponseModel {
     "poster_path": posterPath,
     "production_companies": List<dynamic>.from(productionCompanies.map((x) => x.toJson())),
     "production_countries": List<dynamic>.from(productionCountries.map((x) => x.toJson())),
-    "release_date": "${releaseDate.year.toString().padLeft(4, '0')}-${releaseDate.month.toString().padLeft(2, '0')}-${releaseDate.day.toString().padLeft(2, '0')}",
+    "release_date": "${releaseDate?.year.toString().padLeft(4, '0')}-${releaseDate?.month.toString().padLeft(2, '0')}-${releaseDate?.day.toString().padLeft(2, '0')}",
     "revenue": revenue,
     "runtime": runtime,
     "spoken_languages": List<dynamic>.from(spokenLanguages.map((x) => x.toJson())),

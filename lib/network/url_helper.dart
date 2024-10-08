@@ -11,8 +11,10 @@ class UrlHelper {
   static var movieDetails = "movie/{movie_id}";
   static var movieCredits = "movie/{movie_id}/credits";
   static var movieRecommendations = "movie/{movie_id}/recommendations";
-  static var tvDetails = "tv/{series_id}";
-  static var tvCredits = "tv/{series_id}/credits";
-  static var tvRecommendations = "tv/{series_id}/similar";
+  static var tvDetails = "tv/{series_id}?append_to_response=credits,similar";
   static var tvSeasonDetails = "tv/{series_id}/season/{season_number}";
+  static var personDetails = "person/{person_id}?append_to_response=images,movie_credits,tv_credits";
+  static var searchMovie = "search/movie?query=";
+  static var searchTv = "search/tv?query=";
+  static var searchPerson = "search/person?query=";
 }

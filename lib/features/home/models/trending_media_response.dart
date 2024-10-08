@@ -37,12 +37,12 @@ class TrendingMediaResponse {
 }
 
 class TrendingMediaItem {
-  String backdropPath;
+  String? backdropPath;
   int id;
   String? title;
   String? originalTitle;
   String overview;
-  String posterPath;
+  String? posterPath;
   String mediaType;
   bool adult;
   String originalLanguage;

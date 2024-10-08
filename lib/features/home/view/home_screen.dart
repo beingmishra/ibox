@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibox/config/helpers/common_widgets.dart';
+import 'package:ibox/config/helpers/general_functions.dart';
 import 'package:ibox/config/theme/app_colors.dart';
 import 'package:ibox/config/widgets/movie_card.dart';
 import 'package:ibox/features/home/controller/home_controller.dart';
@@ -117,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 12,
             children: List.generate(controller.movieNowPlayingItems.length, (index) => MovieCard(
-                image: UrlHelper.imageUrl + controller.movieNowPlayingItems[index].posterPath,
+                image: getImageUrl(controller.movieNowPlayingItems[index].posterPath, "media"),
                 name: controller.movieNowPlayingItems[index].title,
                 id:  controller.movieNowPlayingItems[index].id, mediaType: "movie")),
           ),
@@ -157,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 12,
             children: List.generate(controller.moviePopularItems.length, (index) => MovieCard(
-                image: UrlHelper.imageUrl + controller.moviePopularItems[index].posterPath,
+                image: getImageUrl(controller.moviePopularItems[index].posterPath, "media"),
                 name: controller.moviePopularItems[index].title,
                 id:  controller.moviePopularItems[index].id, mediaType: "movie")),
           ),
@@ -197,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 12,
             children: List.generate(controller.tvAiringTodayItems.length, (index) => MovieCard(
-                image: UrlHelper.imageUrl + controller.tvAiringTodayItems[index].posterPath,
+                image: getImageUrl(controller.tvAiringTodayItems[index].posterPath, "media"),
                 name: controller.tvAiringTodayItems[index].name,
                 id:  controller.tvAiringTodayItems[index].id, mediaType: "tv")),
           ),
@@ -237,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 12,
             children: List.generate(controller.tvPopularItems.length, (index) => MovieCard(
-                image: UrlHelper.imageUrl + controller.tvPopularItems[index].posterPath,
+                image: getImageUrl(controller.tvPopularItems[index].posterPath, "media"),
                 name: controller.tvPopularItems[index].name,
                 id:  controller.tvPopularItems[index].id, mediaType: "tv")),
           ),

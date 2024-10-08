@@ -15,7 +15,7 @@ class TvSeasonDetailModel {
   String name;
   String overview;
   int tvSeasonDetailModelId;
-  String posterPath;
+  String? posterPath;
   int seasonNumber;
   double voteAverage;
 

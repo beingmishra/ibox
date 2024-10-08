@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibox/config/helpers/common_widgets.dart';
+import 'package:ibox/config/helpers/general_functions.dart';
 import 'package:ibox/config/theme/app_colors.dart';
-import 'package:ibox/features/search/widgets/search_item_card.dart';
+import 'package:ibox/config/widgets/movie_card.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -36,16 +37,17 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
               ),
+              verticalGap(32),
               Expanded(
-                child: ListView.separated(
-                    itemCount: 4,
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    itemBuilder: (context, index) {
-                  return SearchItemCard();
-                }, separatorBuilder: (BuildContext context, int index) {
-                      return verticalGap(16);
-                },),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      buildPersonItems(size),
+                      buildMovieItems(size),
+                      buildTvItems(size),
+                    ],
+                  ),
+                ),
               )
             ],
           ),
@@ -83,6 +85,143 @@ class _SearchScreenState extends State<SearchScreen> {
             style: GoogleFonts.rubik(color: AppColors.textSecondaryColor),)
         ],
       ),
+    );
+  }
+
+  buildMovieItems(Size size) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "Movies",
+              style:
+              GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            Text(
+              "View all",
+              style:
+              GoogleFonts.rubik(fontSize: 14, color: AppColors.hintColor),
+            ),
+          ],
+        ),
+        verticalGap(16),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Wrap(
+            spacing: 12,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            direction: Axis.horizontal,
+            runAlignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.start,
+            runSpacing: 12,
+            children: List.generate(5, (index) => MovieCard(
+                image: getImageUrl("", "media"),
+                name: "Demo",
+                id:  0, mediaType: "tv")),
+          ),
+        ),
+        verticalGap(32),
+      ],
+    );
+  }
+
+  buildTvItems(Size size) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "Tv Shows",
+              style:
+              GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            Text(
+              "View all",
+              style:
+              GoogleFonts.rubik(fontSize: 14, color: AppColors.hintColor),
+            ),
+          ],
+        ),
+        verticalGap(16),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Wrap(
+            spacing: 12,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            direction: Axis.horizontal,
+            runAlignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.start,
+            runSpacing: 12,
+            children: List.generate(5, (index) => MovieCard(
+                image: getImageUrl("", "media"),
+                name: "Demo",
+                id:  0, mediaType: "tv")),
+          ),
+        ),
+        verticalGap(32),
+      ],
+    );
+  }
+
+  buildPersonItems(Size size) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "People",
+              style:
+              GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            Text(
+              "View all",
+              style:
+              GoogleFonts.rubik(fontSize: 14, color: AppColors.hintColor),
+            ),
+          ],
+        ),
+        verticalGap(16),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Wrap(
+            spacing: 16,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            direction: Axis.horizontal,
+            runAlignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.start,
+            runSpacing: 16,
+            children: List.generate(5, (index) => SizedBox(
+              width: 72,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(1000),
+                    child: Image.network(
+                      getImageUrl("", "person"),
+                      height: 72,
+                      width: 72,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  verticalGap(8),
+                  Text("User",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.rubik()),
+                ],
+              ),
+            )),
+          ),
+        ),
+        verticalGap(32),
+      ],
     );
   }
 }
