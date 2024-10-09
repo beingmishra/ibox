@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibox/config/helpers/common_widgets.dart';
 import 'package:ibox/config/helpers/general_functions.dart';
 import 'package:ibox/config/theme/app_colors.dart';
 import 'package:ibox/config/widgets/movie_card.dart';
+import 'package:ibox/features/search/controllers/search_controller.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -13,6 +17,12 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+
+  final controller = Get.put(SearchMediaController());
+  final searchController = TextEditingController();
+  bool isLoading = false;
+  Timer? _debounce;
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
@@ -29,16 +39,30 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 padding: const EdgeInsets.only(left: 16),
                 child: TextFormField(
+                  controller: searchController,
+                  onChanged: _onSearchChanged,
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "Search here",
                     hintStyle: GoogleFonts.rubik(color: AppColors.textSecondaryColor),
-                    suffixIcon: const Icon(Icons.search)
+                    suffixIconColor: Theme.of(context).iconTheme.color,
+                    suffixIcon: searchController.text.isEmpty ? const Icon(Icons.search) : InkWell(
+                        onTap: () {
+                          searchController.clear();
+                          controller.searchTvResponseModel = null;
+                          controller.searchMovieResponse = null;
+                          controller.searchPersonResponse = null;
+                          setState(() {});
+                        },
+                        child: const Icon(Icons.close),
+                    )
                   ),
                 ),
               ),
               verticalGap(32),
-              Expanded(
+              (controller.searchPersonResponse?.results ?? []).isEmpty && (controller.searchMovieResponse?.results ?? []).isEmpty
+                  && (controller.searchTvResponseModel?.results ?? []).isEmpty
+                  ? buildNoData() : Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
@@ -54,6 +78,19 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      fetchData(query);
+    });
   }
 
   buildNoData() {
@@ -89,7 +126,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   buildMovieItems(Size size) {
-    return Column(
+    return controller.searchMovieResponse == null ? const SizedBox() : Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -117,10 +154,10 @@ class _SearchScreenState extends State<SearchScreen> {
             runAlignment: WrapAlignment.start,
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 12,
-            children: List.generate(5, (index) => MovieCard(
-                image: getImageUrl("", "media"),
-                name: "Demo",
-                id:  0, mediaType: "tv")),
+            children: List.generate(controller.searchMovieResponse!.results.length, (index) => MovieCard(
+                image: getImageUrl(controller.searchMovieResponse!.results[index].posterPath, "media"),
+                name: controller.searchMovieResponse!.results[index].title,
+                id: controller.searchMovieResponse!.results[index].id, mediaType: "movie")),
           ),
         ),
         verticalGap(32),
@@ -129,7 +166,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   buildTvItems(Size size) {
-    return Column(
+    return controller.searchTvResponseModel == null ? const SizedBox() : Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -157,10 +194,10 @@ class _SearchScreenState extends State<SearchScreen> {
             runAlignment: WrapAlignment.start,
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 12,
-            children: List.generate(5, (index) => MovieCard(
-                image: getImageUrl("", "media"),
-                name: "Demo",
-                id:  0, mediaType: "tv")),
+            children: List.generate(controller.searchTvResponseModel!.results.length, (index) => MovieCard(
+                image: getImageUrl(controller.searchTvResponseModel!.results[index].posterPath, "media"),
+                name: controller.searchTvResponseModel!.results[index].name,
+                id: controller.searchTvResponseModel!.results[index].id, mediaType: "tv")),
           ),
         ),
         verticalGap(32),
@@ -169,7 +206,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   buildPersonItems(Size size) {
-    return Column(
+    return controller.searchPersonResponse == null ? const SizedBox() : Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -197,7 +234,7 @@ class _SearchScreenState extends State<SearchScreen> {
             runAlignment: WrapAlignment.start,
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 16,
-            children: List.generate(5, (index) => SizedBox(
+            children: List.generate(controller.searchPersonResponse!.results.length, (index) => SizedBox(
               width: 72,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -205,14 +242,16 @@ class _SearchScreenState extends State<SearchScreen> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(1000),
                     child: Image.network(
-                      getImageUrl("", "person"),
+                      getImageUrl(controller.searchPersonResponse!.results[index].profilePath, "person"),
                       height: 72,
                       width: 72,
                       fit: BoxFit.cover,
                     ),
                   ),
                   verticalGap(8),
-                  Text("User",
+                  Text(controller.searchPersonResponse!.results[index].name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.rubik()),
                 ],
@@ -223,5 +262,29 @@ class _SearchScreenState extends State<SearchScreen> {
         verticalGap(32),
       ],
     );
+  }
+
+  Future<void> fetchData(String query) async {
+
+    if(query.isEmpty){
+      searchController.clear();
+      controller.searchTvResponseModel = null;
+      controller.searchMovieResponse = null;
+      controller.searchPersonResponse = null;
+      setState(() {});
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    await controller.searchPersons(query);
+    await controller.searchMovie(query);
+    await controller.searchTv(query);
+
+    setState(() {
+      isLoading = false;
+    });
   }
 }

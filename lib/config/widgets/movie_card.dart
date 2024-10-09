@@ -31,7 +31,10 @@ class MovieCard extends StatelessWidget {
               ),
             ),
             verticalGap(8),
-            Text(name, style: GoogleFonts.rubik())
+            Text(name, style: GoogleFonts.rubik(),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            )
           ],
         ),
       ),
