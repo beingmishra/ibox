@@ -7,6 +7,7 @@ import 'package:ibox/config/helpers/general_functions.dart';
 import 'package:ibox/config/theme/app_colors.dart';
 import 'package:ibox/config/widgets/movie_card.dart';
 import 'package:ibox/config/widgets/no_data_widget.dart';
+import 'package:ibox/features/common/views/youtube_player_screen.dart';
 import 'package:ibox/features/detail/controllers/tv_detail_controller.dart';
 import 'package:ibox/features/detail/widgets/skeleton_detail_page.dart';
 import 'package:ibox/features/people/views/people_info_screen.dart';
@@ -181,25 +182,38 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryColor,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    margin: const EdgeInsets.symmetric(horizontal: 12),
-                    height: 42,
-                    width: 42,
-                    child: const Center(
-                      child: Icon(
-                        Icons.play_arrow_sharp,
-                        color: Colors.white,
-                        size: 28,
+                  InkWell(
+                    onTap : () {
+                      var item = controller.tvDetail!.videos.results.firstWhereOrNull((data) => data.type.toLowerCase() == "trailer");
+
+                      if(item != null) {
+                        Navigator.push(context, MaterialPageRoute(builder: (
+                            context) => YoutubePlayerScreen(videoId: item.key ?? "")));
+                      }else{
+                        showNoTrailerDialog(context);
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      margin: const EdgeInsets.symmetric(horizontal: 12),
+                      height: 42,
+                      width: 42,
+                      child: const Center(
+                        child: Icon(
+                          Icons.play_arrow_sharp,
+                          color: Colors.white,
+                          size: 28,
+                        ),
                       ),
                     ),
                   ),
                   verticalGap(12),
                   Text(
                     controller.tvDetail!.name,
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.rubik(
                         fontSize: 22, fontWeight: FontWeight.w600),
                   ),
@@ -219,6 +233,7 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
                       ),
                       horizontalGap(8),
                       Text(genreStringFromObj(controller.tvDetail!.genres),
+                          overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.rubik(fontSize: 12)),
                     ],
                   ),

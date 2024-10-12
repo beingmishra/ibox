@@ -15,16 +15,16 @@ class ApiService {
   Future<http.Response> get(String endpoint, bool isToken) async {
     var url = Uri.parse(baseUrl + endpoint);
     var response = await client.get(url, headers: getHeaders(isToken));
-    print('Url is >>>>>>> $url');
-    print('Response is >>>>>>> ${response.body}');
+    log('Url is >>>>>>> $url');
+    log('Response is >>>>>>> ${response.body}');
     return response;
   }
 
   // POST request
   Future<Response> post(String endpoint, bool isToken, {required Map<String, dynamic> body}) async {
     var url = Uri.parse(baseUrl + endpoint);
-    print('Url is >>>>>>> $url');
-    print('Request is >>>>>>> $body');
+    log('Url is >>>>>>> $url');
+    log('Request is >>>>>>> $body');
     var response = await client.post(url, headers: getHeaders(isToken), body: jsonEncode(body));
     return response;
   }
@@ -33,7 +33,7 @@ class ApiService {
   Future<Response> customGet(String urlStr, bool isToken) async {
     var url = Uri.parse(urlStr);
     var response = await client.get(url, headers: getHeaders(isToken));
-    print('Url is >>>>>>> $url');
+    log('Url is >>>>>>> $url');
     return response;
   }
 

@@ -8,10 +8,8 @@ class UrlHelper {
   static var movieUpcoming = "movie/upcoming";
   static var tvAiringToday = "tv/airing_today";
   static var tvPopular = "tv/popular";
-  static var movieDetails = "movie/{movie_id}";
-  static var movieCredits = "movie/{movie_id}/credits";
-  static var movieRecommendations = "movie/{movie_id}/recommendations";
-  static var tvDetails = "tv/{series_id}?append_to_response=credits,similar";
+  static var movieDetails = "movie/{movie_id}?append_to_response=credits,similar,videos";
+  static var tvDetails = "tv/{series_id}?append_to_response=credits,similar,videos";
   static var tvSeasonDetails = "tv/{series_id}/season/{season_number}";
   static var personDetails = "person/{person_id}?append_to_response=images,movie_credits,tv_credits";
   static var searchMovie = "search/movie?query=";

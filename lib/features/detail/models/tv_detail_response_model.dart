@@ -11,29 +11,29 @@ TvDetailResponseModel tvDetailResponseModelFromJson(String str) => TvDetailRespo
 String tvDetailResponseModelToJson(TvDetailResponseModel data) => json.encode(data.toJson());
 
 class TvDetailResponseModel {
-  bool? adult;
-  String? backdropPath;
+  bool adult;
+  String backdropPath;
   List<dynamic> createdBy;
   List<int> episodeRunTime;
   DateTime firstAirDate;
   List<GenreObj> genres;
   String homepage;
   int id;
-  bool? inProduction;
-  List<String> languages;
+  bool inProduction;
+  List<OriginalLanguage> languages;
   DateTime lastAirDate;
   TEpisodeToAir lastEpisodeToAir;
   String name;
-  TEpisodeToAir? nextEpisodeToAir;
+  TEpisodeToAir nextEpisodeToAir;
   List<Network> networks;
   int numberOfEpisodes;
   int numberOfSeasons;
-  List<String> originCountry;
-  String? originalLanguage;
+  List<OriginCountry> originCountry;
+  OriginalLanguage originalLanguage;
   String originalName;
   String overview;
   double popularity;
-  String? posterPath;
+  String posterPath;
   List<Network> productionCompanies;
   List<ProductionCountry> productionCountries;
   List<Season> seasons;
@@ -45,6 +45,7 @@ class TvDetailResponseModel {
   int voteCount;
   Credits credits;
   Similar similar;
+  Videos videos;
 
   TvDetailResponseModel({
     required this.adult,
@@ -81,6 +82,7 @@ class TvDetailResponseModel {
     required this.voteCount,
     required this.credits,
     required this.similar,
+    required this.videos,
   });
 
   factory TvDetailResponseModel.fromJson(Map<String, dynamic> json) => TvDetailResponseModel(
@@ -93,16 +95,16 @@ class TvDetailResponseModel {
     homepage: json["homepage"],
     id: json["id"],
     inProduction: json["in_production"],
-    languages: List<String>.from(json["languages"].map((x) => x)),
+    languages: List<OriginalLanguage>.from(json["languages"].map((x) => originalLanguageValues.map[x]!)),
     lastAirDate: DateTime.parse(json["last_air_date"]),
     lastEpisodeToAir: TEpisodeToAir.fromJson(json["last_episode_to_air"]),
     name: json["name"],
-    nextEpisodeToAir: json["next_episode_to_air"] == null ? null : TEpisodeToAir.fromJson(json["next_episode_to_air"]),
+    nextEpisodeToAir: TEpisodeToAir.fromJson(json["next_episode_to_air"]),
     networks: List<Network>.from(json["networks"].map((x) => Network.fromJson(x))),
     numberOfEpisodes: json["number_of_episodes"],
     numberOfSeasons: json["number_of_seasons"],
-    originCountry: List<String>.from(json["origin_country"].map((x) => x)),
-    originalLanguage: json["original_language"],
+    originCountry: List<OriginCountry>.from(json["origin_country"].map((x) => originCountryValues.map[x]!)),
+    originalLanguage: originalLanguageValues.map[json["original_language"]]!,
     originalName: json["original_name"],
     overview: json["overview"],
     popularity: json["popularity"]?.toDouble(),
@@ -118,6 +120,7 @@ class TvDetailResponseModel {
     voteCount: json["vote_count"],
     credits: Credits.fromJson(json["credits"]),
     similar: Similar.fromJson(json["similar"]),
+    videos: Videos.fromJson(json["videos"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -130,16 +133,16 @@ class TvDetailResponseModel {
     "homepage": homepage,
     "id": id,
     "in_production": inProduction,
-    "languages": List<dynamic>.from(languages.map((x) => x)),
+    "languages": List<dynamic>.from(languages.map((x) => originalLanguageValues.reverse[x])),
     "last_air_date": "${lastAirDate.year.toString().padLeft(4, '0')}-${lastAirDate.month.toString().padLeft(2, '0')}-${lastAirDate.day.toString().padLeft(2, '0')}",
     "last_episode_to_air": lastEpisodeToAir.toJson(),
     "name": name,
-    "next_episode_to_air": nextEpisodeToAir?.toJson(),
+    "next_episode_to_air": nextEpisodeToAir.toJson(),
     "networks": List<dynamic>.from(networks.map((x) => x.toJson())),
     "number_of_episodes": numberOfEpisodes,
     "number_of_seasons": numberOfSeasons,
-    "origin_country": List<dynamic>.from(originCountry.map((x) => x)),
-    "original_language": originalLanguage,
+    "origin_country": List<dynamic>.from(originCountry.map((x) => originCountryValues.reverse[x])),
+    "original_language": originalLanguageValues.reverse[originalLanguage],
     "original_name": originalName,
     "overview": overview,
     "popularity": popularity,
@@ -155,6 +158,7 @@ class TvDetailResponseModel {
     "vote_count": voteCount,
     "credits": credits.toJson(),
     "similar": similar.toJson(),
+    "videos": videos.toJson(),
   };
 }
 
@@ -242,40 +246,32 @@ class Cast {
   };
 }
 
-class Genre {
-  int id;
-  String name;
-
-  Genre({
-    required this.id,
-    required this.name,
-  });
-
-  factory Genre.fromJson(Map<String, dynamic> json) => Genre(
-    id: json["id"],
-    name: json["name"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-  };
+enum OriginalLanguage {
+  EN,
+  JA,
+  ZH
 }
+
+final originalLanguageValues = EnumValues({
+  "en": OriginalLanguage.EN,
+  "ja": OriginalLanguage.JA,
+  "zh": OriginalLanguage.ZH
+});
 
 class TEpisodeToAir {
   int id;
   String name;
   String overview;
-  double voteAverage;
+  int voteAverage;
   int voteCount;
   DateTime airDate;
   int episodeNumber;
   String episodeType;
   String productionCode;
-  int? runtime;
+  int runtime;
   int seasonNumber;
   int showId;
-  String? stillPath;
+  String stillPath;
 
   TEpisodeToAir({
     required this.id,
@@ -328,9 +324,9 @@ class TEpisodeToAir {
 
 class Network {
   int id;
-  String? logoPath;
+  String logoPath;
   String name;
-  String? originCountry;
+  OriginCountry originCountry;
 
   Network({
     required this.id,
@@ -343,19 +339,31 @@ class Network {
     id: json["id"],
     logoPath: json["logo_path"],
     name: json["name"],
-    originCountry: json["origin_country"],
+    originCountry: originCountryValues.map[json["origin_country"]]!,
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "logo_path": logoPath,
     "name": name,
-    "origin_country": originCountry,
+    "origin_country": originCountryValues.reverse[originCountry],
   };
 }
 
+enum OriginCountry {
+  CN,
+  JP,
+  US
+}
+
+final originCountryValues = EnumValues({
+  "CN": OriginCountry.CN,
+  "JP": OriginCountry.JP,
+  "US": OriginCountry.US
+});
+
 class ProductionCountry {
-  String iso31661;
+  OriginCountry iso31661;
   String name;
 
   ProductionCountry({
@@ -364,23 +372,23 @@ class ProductionCountry {
   });
 
   factory ProductionCountry.fromJson(Map<String, dynamic> json) => ProductionCountry(
-    iso31661: json["iso_3166_1"],
+    iso31661: originCountryValues.map[json["iso_3166_1"]]!,
     name: json["name"],
   );
 
   Map<String, dynamic> toJson() => {
-    "iso_3166_1": iso31661,
+    "iso_3166_1": originCountryValues.reverse[iso31661],
     "name": name,
   };
 }
 
 class Season {
-  DateTime? airDate;
+  DateTime airDate;
   int episodeCount;
   int id;
   String name;
   String overview;
-  String? posterPath;
+  String posterPath;
   int seasonNumber;
   double voteAverage;
 
@@ -396,18 +404,18 @@ class Season {
   });
 
   factory Season.fromJson(Map<String, dynamic> json) => Season(
-    airDate: json["air_date"] == null ? null : DateTime.parse(json["air_date"]),
+    airDate: DateTime.parse(json["air_date"]),
     episodeCount: json["episode_count"],
     id: json["id"],
     name: json["name"],
     overview: json["overview"],
     posterPath: json["poster_path"],
     seasonNumber: json["season_number"],
-    voteAverage: json["vote_average"],
+    voteAverage: json["vote_average"]?.toDouble(),
   );
 
   Map<String, dynamic> toJson() => {
-    "air_date": "${airDate?.year.toString().padLeft(4, '0')}-${airDate?.month.toString().padLeft(2, '0')}-${airDate?.day.toString().padLeft(2, '0')}",
+    "air_date": "${airDate.year.toString().padLeft(4, '0')}-${airDate.month.toString().padLeft(2, '0')}-${airDate.day.toString().padLeft(2, '0')}",
     "episode_count": episodeCount,
     "id": id,
     "name": name,
@@ -420,7 +428,7 @@ class Season {
 
 class Similar {
   int page;
-  List<Result> results;
+  List<SimilarResult> results;
   int totalPages;
   int totalResults;
 
@@ -433,7 +441,7 @@ class Similar {
 
   factory Similar.fromJson(Map<String, dynamic> json) => Similar(
     page: json["page"],
-    results: List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
+    results: List<SimilarResult>.from(json["results"].map((x) => SimilarResult.fromJson(x))),
     totalPages: json["total_pages"],
     totalResults: json["total_results"],
   );
@@ -446,23 +454,23 @@ class Similar {
   };
 }
 
-class Result {
+class SimilarResult {
   bool adult;
   String? backdropPath;
   List<int> genreIds;
   int id;
-  List<String> originCountry;
-  String? originalLanguage;
+  List<OriginCountry> originCountry;
+  OriginalLanguage originalLanguage;
   String originalName;
   String overview;
   double popularity;
-  String? posterPath;
-  String firstAirDate;
+  String posterPath;
+  DateTime firstAirDate;
   String name;
   double voteAverage;
   int voteCount;
 
-  Result({
+  SimilarResult({
     required this.adult,
     required this.backdropPath,
     required this.genreIds,
@@ -479,18 +487,18 @@ class Result {
     required this.voteCount,
   });
 
-  factory Result.fromJson(Map<String, dynamic> json) => Result(
+  factory SimilarResult.fromJson(Map<String, dynamic> json) => SimilarResult(
     adult: json["adult"],
     backdropPath: json["backdrop_path"],
     genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
     id: json["id"],
-    originCountry: json["origin_country"] == null ? [] : List<String>.from(json["origin_country"].map((x) => x)),
-    originalLanguage: json["original_language"],
+    originCountry: List<OriginCountry>.from(json["origin_country"].map((x) => originCountryValues.map[x]!)),
+    originalLanguage: originalLanguageValues.map[json["original_language"]]!,
     originalName: json["original_name"],
     overview: json["overview"],
     popularity: json["popularity"]?.toDouble(),
     posterPath: json["poster_path"],
-    firstAirDate: json["first_air_date"],
+    firstAirDate: DateTime.parse(json["first_air_date"]),
     name: json["name"],
     voteAverage: json["vote_average"]?.toDouble(),
     voteCount: json["vote_count"],
@@ -501,13 +509,13 @@ class Result {
     "backdrop_path": backdropPath,
     "genre_ids": List<dynamic>.from(genreIds.map((x) => x)),
     "id": id,
-    "origin_country": List<dynamic>.from(originCountry.map((x) => x)),
-    "original_language": originalLanguage,
+    "origin_country": List<dynamic>.from(originCountry.map((x) => originCountryValues.reverse[x])),
+    "original_language": originalLanguageValues.reverse[originalLanguage],
     "original_name": originalName,
     "overview": overview,
     "popularity": popularity,
     "poster_path": posterPath,
-    "first_air_date": firstAirDate,
+    "first_air_date": "${firstAirDate.year.toString().padLeft(4, '0')}-${firstAirDate.month.toString().padLeft(2, '0')}-${firstAirDate.day.toString().padLeft(2, '0')}",
     "name": name,
     "vote_average": voteAverage,
     "vote_count": voteCount,
@@ -516,7 +524,7 @@ class Result {
 
 class SpokenLanguage {
   String englishName;
-  String iso6391;
+  OriginalLanguage iso6391;
   String name;
 
   SpokenLanguage({
@@ -527,13 +535,93 @@ class SpokenLanguage {
 
   factory SpokenLanguage.fromJson(Map<String, dynamic> json) => SpokenLanguage(
     englishName: json["english_name"],
-    iso6391: json["iso_639_1"],
+    iso6391: originalLanguageValues.map[json["iso_639_1"]]!,
     name: json["name"],
   );
 
   Map<String, dynamic> toJson() => {
     "english_name": englishName,
-    "iso_639_1": iso6391,
+    "iso_639_1": originalLanguageValues.reverse[iso6391],
     "name": name,
   };
+}
+
+class Videos {
+  List<VideosResult> results;
+
+  Videos({
+    required this.results,
+  });
+
+  factory Videos.fromJson(Map<String, dynamic> json) => Videos(
+    results: List<VideosResult>.from(json["results"].map((x) => VideosResult.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "results": List<dynamic>.from(results.map((x) => x.toJson())),
+  };
+}
+
+class VideosResult {
+  OriginalLanguage iso6391;
+  OriginCountry iso31661;
+  String name;
+  String key;
+  String site;
+  int size;
+  String type;
+  bool official;
+  DateTime publishedAt;
+  String id;
+
+  VideosResult({
+    required this.iso6391,
+    required this.iso31661,
+    required this.name,
+    required this.key,
+    required this.site,
+    required this.size,
+    required this.type,
+    required this.official,
+    required this.publishedAt,
+    required this.id,
+  });
+
+  factory VideosResult.fromJson(Map<String, dynamic> json) => VideosResult(
+    iso6391: originalLanguageValues.map[json["iso_639_1"]]!,
+    iso31661: originCountryValues.map[json["iso_3166_1"]]!,
+    name: json["name"],
+    key: json["key"],
+    site: json["site"],
+    size: json["size"],
+    type: json["type"],
+    official: json["official"],
+    publishedAt: DateTime.parse(json["published_at"]),
+    id: json["id"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "iso_639_1": originalLanguageValues.reverse[iso6391],
+    "iso_3166_1": originCountryValues.reverse[iso31661],
+    "name": name,
+    "key": key,
+    "site": site,
+    "size": size,
+    "type": type,
+    "official": official,
+    "published_at": publishedAt.toIso8601String(),
+    "id": id,
+  };
+}
+
+class EnumValues<T> {
+  Map<String, T> map;
+  late Map<T, String> reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    reverseMap = map.map((k, v) => MapEntry(v, k));
+    return reverseMap;
+  }
 }

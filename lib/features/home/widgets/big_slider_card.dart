@@ -6,6 +6,8 @@ import 'package:ibox/config/helpers/common_widgets.dart';
 import 'package:ibox/config/helpers/gener_helper.dart';
 import 'package:ibox/config/helpers/general_functions.dart';
 import 'package:ibox/config/theme/app_colors.dart';
+import 'package:ibox/features/detail/views/movie_detail_screen.dart';
+import 'package:ibox/features/detail/views/tv_detail_screen.dart';
 import 'package:ibox/features/home/models/trending_media_response.dart';
 
 class BigSliderCard extends StatelessWidget {
@@ -91,15 +93,24 @@ class BigSliderCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.25),
-                      borderRadius: BorderRadius.circular(100),
+                  InkWell(
+                    onTap: () {
+                      if(data.mediaType == "tv"){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => TvDetailScreen(id: data.id,)));
+                      }else{
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MovieDetailScreen(id: data.id,)));
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.25),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      margin: const EdgeInsets.symmetric(horizontal: 12),
+                      height: 42,
+                      width: 42,
+                      child: const Center(child: Icon(Icons.play_arrow_sharp, color: Colors.white, size: 28,),),
                     ),
-                    margin: const EdgeInsets.symmetric(horizontal: 12),
-                    height: 42,
-                    width: 42,
-                    child: const Center(child: Icon(Icons.play_arrow_sharp, color: Colors.white, size: 28,),),
                   )
                 ],
               ),

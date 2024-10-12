@@ -7,6 +7,7 @@ import 'package:ibox/config/helpers/general_functions.dart';
 import 'package:ibox/config/theme/app_colors.dart';
 import 'package:ibox/config/widgets/movie_card.dart';
 import 'package:ibox/config/widgets/no_data_widget.dart';
+import 'package:ibox/features/common/views/youtube_player_screen.dart';
 import 'package:ibox/features/detail/controllers/movie_detail_controller.dart';
 import 'package:ibox/features/detail/widgets/skeleton_detail_page.dart';
 import 'package:ibox/features/people/views/people_info_screen.dart';
@@ -74,8 +75,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                       runAlignment: WrapAlignment.start,
                       crossAxisAlignment: WrapCrossAlignment.start,
                       runSpacing: 12,
-                      children: List.generate(controller.movieCredits!.cast.length, (index) => InkWell(
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PeopleInfoScreen(id: controller.movieCredits!.cast[index].id,))),
+                      children: List.generate(controller.movieDetail!.credits.cast.length ?? 0, (index) => InkWell(
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PeopleInfoScreen(id: controller.movieDetail!.credits.cast[index].id,))),
                         child: SizedBox(
                           width: 80,
                           child: Column(
@@ -86,7 +87,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(50), // Circular image with smoother radius
                                 child: Image.network(
-                                  getImageUrl(controller.movieCredits!.cast[index].profilePath, "person"),
+                                  getImageUrl(controller.movieDetail!.credits.cast[index].profilePath, "person"),
                                   height: 80,
                                   width: 80,
                                   fit: BoxFit.cover,
@@ -96,7 +97,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
                               // Cast member's name
                               Text(
-                                controller.movieCredits!.cast[index].name,
+                                controller.movieDetail!.credits.cast[index].name,
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.rubik(
                                   fontSize: 14,
@@ -109,7 +110,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
                               // Character name
                               Text(
-                                "(${controller.movieCredits!.cast[index].character})",
+                                "(${controller.movieDetail!.credits.cast[index].character})",
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.rubik(
                                   fontSize: 12,
@@ -174,25 +175,39 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryColor,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    margin: const EdgeInsets.symmetric(horizontal: 12),
-                    height: 42,
-                    width: 42,
-                    child: const Center(
-                      child: Icon(
-                        Icons.play_arrow_sharp,
-                        color: Colors.white,
-                        size: 28,
+                  InkWell(
+                    onTap: () {
+
+                      var item = controller.movieDetail!.videos.results.firstWhereOrNull((data) => data.type.toLowerCase() == "trailer");
+
+                      if(item != null) {
+                        Navigator.push(context, MaterialPageRoute(builder: (
+                            context) => YoutubePlayerScreen(videoId: item?.key ?? "")));
+                      }else{
+                        showNoTrailerDialog(context);
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      margin: const EdgeInsets.symmetric(horizontal: 12),
+                      height: 42,
+                      width: 42,
+                      child: const Center(
+                        child: Icon(
+                          Icons.play_arrow_sharp,
+                          color: Colors.white,
+                          size: 28,
+                        ),
                       ),
                     ),
                   ),
                   verticalGap(12),
                   Text(
                     controller.movieDetail!.title,
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.rubik(
                         fontSize: 22, fontWeight: FontWeight.w600),
                   ),
@@ -242,7 +257,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   }
 
   buildRecommendations(Size size) {
-    return controller.movieRecommendations == null ? const SizedBox() : Column(
+    return controller.movieDetail!.similar == null ? const SizedBox() : Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -260,10 +275,10 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
             runAlignment: WrapAlignment.start,
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 12,
-            children: List.generate(controller.movieRecommendations!.results.length, (index) => MovieCard(
-                image: getImageUrl(controller.movieRecommendations!.results[index].posterPath, "media"),
-                name: controller.movieRecommendations!.results[index].title,
-                id:  controller.movieRecommendations!.results[index].id, mediaType: "movie")),
+            children: List.generate(controller.movieDetail!.similar.results.length, (index) => MovieCard(
+                image: getImageUrl(controller.movieDetail!.similar.results[index].posterPath, "media"),
+                name: controller.movieDetail!.similar.results[index].title,
+                id:  controller.movieDetail!.similar.results[index].id, mediaType: "movie")),
           ),
         ),
         verticalGap(32),
@@ -277,8 +292,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
     });
 
     await controller.fetchMovieDetail(widget.id);
-    await controller.fetchMovieCredits(widget.id);
-    await controller.fetchMovieRecommendations(widget.id);
 
     setState(() {
       isLoading = false;
