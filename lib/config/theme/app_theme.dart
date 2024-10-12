@@ -16,10 +16,11 @@ class AppTheme {
     dividerColor: Colors.grey.shade200.withOpacity(0.6),
     appBarTheme: const AppBarTheme(
       iconTheme: IconThemeData(color: Colors.white),
+      backgroundColor: Colors.transparent,
       elevation: 0.0,
       systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
-        systemNavigationBarColor: Colors.white,
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: AppColors.scaffoldDarkColor,
         systemNavigationBarDividerColor: Colors.black,
         systemNavigationBarIconBrightness: Brightness.dark,
       ),

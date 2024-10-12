@@ -1,38 +1,34 @@
 // To parse this JSON data, do
 //
-//     final movieNowPlayingResponse = movieNowPlayingResponseFromJson(jsonString);
+//     final genreMovieResponseModel = genreMovieResponseModelFromJson(jsonString);
 
 import 'dart:convert';
 
-MovieResponse movieResponseFromJson(String str) => MovieResponse.fromJson(json.decode(str));
+GenreMovieResponseModel genreMovieResponseModelFromJson(String str) => GenreMovieResponseModel.fromJson(json.decode(str));
 
-String movieResponseToJson(MovieResponse data) => json.encode(data.toJson());
+String genreMovieResponseModelToJson(GenreMovieResponseModel data) => json.encode(data.toJson());
 
-class MovieResponse {
-  Dates? dates;
+class GenreMovieResponseModel {
   int page;
-  List<MovieItem> results;
+  List<GenreMovie> results;
   int totalPages;
   int totalResults;
 
-  MovieResponse({
-    required this.dates,
+  GenreMovieResponseModel({
     required this.page,
     required this.results,
     required this.totalPages,
     required this.totalResults,
   });
 
-  factory MovieResponse.fromJson(Map<String, dynamic> json) => MovieResponse(
-    dates: json["dates"] == null ? null : Dates.fromJson(json["dates"]),
+  factory GenreMovieResponseModel.fromJson(Map<String, dynamic> json) => GenreMovieResponseModel(
     page: json["page"],
-    results: List<MovieItem>.from(json["results"].map((x) => MovieItem.fromJson(x))),
+    results: List<GenreMovie>.from(json["results"].map((x) => GenreMovie.fromJson(x))),
     totalPages: json["total_pages"],
     totalResults: json["total_results"],
   );
 
   Map<String, dynamic> toJson() => {
-    "dates": dates?.toJson(),
     "page": page,
     "results": List<dynamic>.from(results.map((x) => x.toJson())),
     "total_pages": totalPages,
@@ -40,27 +36,7 @@ class MovieResponse {
   };
 }
 
-class Dates {
-  DateTime maximum;
-  DateTime minimum;
-
-  Dates({
-    required this.maximum,
-    required this.minimum,
-  });
-
-  factory Dates.fromJson(Map<String, dynamic> json) => Dates(
-    maximum: DateTime.parse(json["maximum"]),
-    minimum: DateTime.parse(json["minimum"]),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "maximum": "${maximum.year.toString().padLeft(4, '0')}-${maximum.month.toString().padLeft(2, '0')}-${maximum.day.toString().padLeft(2, '0')}",
-    "minimum": "${minimum.year.toString().padLeft(4, '0')}-${minimum.month.toString().padLeft(2, '0')}-${minimum.day.toString().padLeft(2, '0')}",
-  };
-}
-
-class MovieItem {
+class GenreMovie {
   bool adult;
   String? backdropPath;
   List<int> genreIds;
@@ -76,7 +52,7 @@ class MovieItem {
   double voteAverage;
   int voteCount;
 
-  MovieItem({
+  GenreMovie({
     required this.adult,
     required this.backdropPath,
     required this.genreIds,
@@ -93,7 +69,7 @@ class MovieItem {
     required this.voteCount,
   });
 
-  factory MovieItem.fromJson(Map<String, dynamic> json) => MovieItem(
+  factory GenreMovie.fromJson(Map<String, dynamic> json) => GenreMovie(
     adult: json["adult"],
     backdropPath: json["backdrop_path"],
     genreIds: List<int>.from(json["genre_ids"].map((x) => x)),

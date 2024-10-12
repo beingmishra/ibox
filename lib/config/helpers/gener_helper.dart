@@ -7,6 +7,42 @@ class Genre {
   Genre({required this.id, required this.name});
 }
 
+class MixGenre {
+  final int movieId;
+  final int tvId;
+  final String name;
+
+  MixGenre({required this.movieId, required this.tvId, required this.name});
+}
+
+// List of movie genres
+final List<MixGenre> mixGenres = [
+  MixGenre(movieId: 28, tvId: 10759, name: "Action"),
+  MixGenre(movieId: 12, tvId: -1, name: "Adventure"),
+  MixGenre(movieId: 16, tvId: 16, name: "Animation"),
+  MixGenre(movieId: 35, tvId: 35, name: "Comedy"),
+  MixGenre(movieId: 80, tvId: 80, name: "Crime"),
+  MixGenre(movieId: 99, tvId: 99, name: "Documentary"),
+  MixGenre(movieId: 18, tvId: 18, name: "Drama"),
+  MixGenre(movieId: 10751, tvId: 10751, name: "Family"),
+  MixGenre(movieId: -1, tvId: 10762, name: "Kids"),
+  MixGenre(movieId: 14, tvId: -1, name: "Fantasy"),
+  MixGenre(movieId: 36, tvId: -1, name: "History"),
+  MixGenre(movieId: 27, tvId: -1, name: "Horror"),
+  MixGenre(movieId: 10402, tvId: -1, name: "Music"),
+  MixGenre(movieId: 9648, tvId: 9648, name: "Mystery"),
+  MixGenre(movieId: -1, tvId: 10763, name: "News"),
+  MixGenre(movieId: 10749, tvId: -1, name: "Romance"),
+  MixGenre(movieId: -1, tvId: 10764, name: "Reality"),
+  MixGenre(movieId: 878, tvId: 10765, name: "Science Fiction"),
+  MixGenre(movieId: -1, tvId: 10766, name: "Soap"),
+  MixGenre(movieId: 10770, tvId: -1, name: "TV Movie"),
+  MixGenre(movieId: -1, tvId: 10767, name: "Talk"),
+  MixGenre(movieId: 53, tvId: -1, name: "Thriller"),
+  MixGenre(movieId: 10752, tvId: 10768, name: "War"),
+  MixGenre(movieId: 37, tvId: 37, name: "Western"),
+];
+
 // List of movie genres
 final List<Genre> movieGenres = [
   Genre(id: 28, name: "Action"),

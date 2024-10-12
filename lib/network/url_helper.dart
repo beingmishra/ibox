@@ -17,4 +17,6 @@ class UrlHelper {
   static var searchMovie = "search/movie?query=";
   static var searchTv = "search/tv?query=";
   static var searchPerson = "search/person?query=";
+  static var discoverMovies = "discover/movie?page={page_num}&sort_by=popularity.desc&with_genres={genre_id}";
+  static var discoverTvShows = "discover/tv?page={page_num}&sort_by=popularity.desc&with_genres={genre_id}";
 }

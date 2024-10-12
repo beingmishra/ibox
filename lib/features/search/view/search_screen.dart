@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ibox/config/helpers/common_widgets.dart';
+import 'package:ibox/config/helpers/gener_helper.dart';
 import 'package:ibox/config/helpers/general_functions.dart';
 import 'package:ibox/config/theme/app_colors.dart';
 import 'package:ibox/config/widgets/movie_card.dart';
+import 'package:ibox/features/genre/views/genre_filtered_screen.dart';
 import 'package:ibox/features/search/controllers/search_controller.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -65,7 +67,9 @@ class _SearchScreenState extends State<SearchScreen> {
                   ? buildNoData() : Expanded(
                 child: SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const Row(), // placeholder
                       buildPersonItems(size),
                       buildMovieItems(size),
                       buildTvItems(size),
@@ -96,61 +100,39 @@ class _SearchScreenState extends State<SearchScreen> {
   buildNoData() {
     return Expanded(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(100),
-            ),
-            margin: const EdgeInsets.symmetric(horizontal: 12),
-            height: 64,
-            width: 64,
-            child: const Center(
-              child: Icon(
-                Icons.search,
-                color: Colors.white,
-                size: 32,
-              ),
-            ),
-          ),
+          Text("Explore by genre", style: GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),),
           verticalGap(16),
-          Text("Not Found!", style: GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),),
-          verticalGap(8),
-          Text("So sorry, the keyword you are looking\nfor doesn't exists",
-            textAlign: TextAlign.center,
-            style: GoogleFonts.rubik(color: AppColors.textSecondaryColor),)
+          Wrap(
+            spacing: 16,
+            children: mixGenres.map((data) => InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => GenreFilteredScreen(genreData: data))),
+                child: Chip(label: Text(data.name)))).toList(),
+          )
         ],
       ),
     );
   }
 
   buildMovieItems(Size size) {
-    return controller.searchMovieResponse == null ? const SizedBox() : Column(
+    return (controller.searchMovieResponse?.results ?? []).isEmpty ? const SizedBox() : Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "Movies",
-              style:
-              GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            Text(
-              "View all",
-              style:
-              GoogleFonts.rubik(fontSize: 14, color: AppColors.hintColor),
-            ),
-          ],
+        Text(
+          "Movies",
+          style:
+          GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         verticalGap(16),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
+          padding: EdgeInsets.zero,
           child: Wrap(
             spacing: 12,
-            clipBehavior: Clip.antiAliasWithSaveLayer,
             direction: Axis.horizontal,
+            alignment: WrapAlignment.start,
             runAlignment: WrapAlignment.start,
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 12,
@@ -166,23 +148,13 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   buildTvItems(Size size) {
-    return controller.searchTvResponseModel == null ? const SizedBox() : Column(
+    return (controller.searchTvResponseModel?.results ?? []).isEmpty ? const SizedBox() : Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "Tv Shows",
-              style:
-              GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            Text(
-              "View all",
-              style:
-              GoogleFonts.rubik(fontSize: 14, color: AppColors.hintColor),
-            ),
-          ],
+        Text(
+          "Tv Shows",
+          style:
+          GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         verticalGap(16),
         SingleChildScrollView(
@@ -206,23 +178,13 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   buildPersonItems(Size size) {
-    return controller.searchPersonResponse == null ? const SizedBox() : Column(
+    return (controller.searchPersonResponse?.results ?? []).isEmpty ? const SizedBox() : Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "People",
-              style:
-              GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            Text(
-              "View all",
-              style:
-              GoogleFonts.rubik(fontSize: 14, color: AppColors.hintColor),
-            ),
-          ],
+        Text(
+          "People",
+          style:
+          GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         verticalGap(16),
         SingleChildScrollView(

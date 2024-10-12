@@ -10,7 +10,6 @@ import 'package:ibox/config/widgets/no_data_widget.dart';
 import 'package:ibox/features/detail/controllers/tv_detail_controller.dart';
 import 'package:ibox/features/detail/widgets/skeleton_detail_page.dart';
 import 'package:ibox/features/people/views/people_info_screen.dart';
-import 'package:ibox/network/url_helper.dart';
 
 class TvDetailScreen extends StatefulWidget {
   final int id;
@@ -23,6 +22,9 @@ class TvDetailScreen extends StatefulWidget {
 class _TvDetailScreenState extends State<TvDetailScreen> {
   final controller = Get.put(TvDetailController());
   bool isLoading = false;
+  bool isLoadingEps = false;
+  bool showAllEps = false;
+  int selectedSeason = 0;
 
   @override
   void initState() {
@@ -77,18 +79,33 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
                                 children: List.generate(
                                     controller.tvDetail!.credits.cast.length,
                                     (index) => InkWell(
-                                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PeopleInfoScreen(id: controller.tvDetail!
-                                          .credits.cast[index].id))),
-                                      child: SizedBox(
+                                          onTap: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PeopleInfoScreen(
+                                                          id: controller
+                                                              .tvDetail!
+                                                              .credits
+                                                              .cast[index]
+                                                              .id))),
+                                          child: SizedBox(
                                             width: 64,
                                             child: Column(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 ClipRRect(
                                                   borderRadius:
-                                                      BorderRadius.circular(100),
+                                                      BorderRadius.circular(
+                                                          100),
                                                   child: Image.network(
-                                                    getImageUrl(controller.tvDetail!.credits.cast[index].profilePath, "person"),
+                                                    getImageUrl(
+                                                        controller
+                                                            .tvDetail!
+                                                            .credits
+                                                            .cast[index]
+                                                            .profilePath,
+                                                        "person"),
                                                     height: 64,
                                                     width: 64,
                                                     fit: BoxFit.cover,
@@ -96,58 +113,25 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
                                                 ),
                                                 verticalGap(8),
                                                 Text(
-                                                    controller.tvDetail!
-                                                        .credits.cast[index].name,
+                                                    controller.tvDetail!.credits
+                                                        .cast[index].name,
                                                     textAlign: TextAlign.center,
                                                     style: GoogleFonts.rubik(
                                                         fontSize: 14)),
                                                 verticalGap(4),
                                                 Text(
-                                                    "(${controller.tvDetail!
-                                                        .credits.cast[index].character})",
+                                                    "(${controller.tvDetail!.credits.cast[index].character})",
                                                     textAlign: TextAlign.center,
                                                     style: GoogleFonts.rubik(
                                                         fontSize: 14)),
                                               ],
                                             ),
                                           ),
-                                    )),
-                              ),
-                            ),
-                            verticalGap(24),
-                            Text("Seasons",
-                                style: GoogleFonts.rubik(
-                                    fontSize: 18, fontWeight: FontWeight.w600)),
-                            verticalGap(12),
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Wrap(
-                                spacing: 12,
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                direction: Axis.horizontal,
-                                runAlignment: WrapAlignment.start,
-                                crossAxisAlignment: WrapCrossAlignment.start,
-                                runSpacing: 12,
-                                children: List.generate(
-                                    controller.tvDetail!.seasons.length,
-                                    (index) => Container(
-                                          width: size.width * 0.3,
-                                          decoration: BoxDecoration(
-                                              color: AppColors.cardDarkColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          padding: const EdgeInsets.all(16),
-                                          child: Center(
-                                              child: Text(
-                                            controller.tvDetail!.seasons[index].name,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: GoogleFonts.rubik(),
-                                          )),
                                         )),
                               ),
                             ),
                             verticalGap(24),
+                            buildSeasonSection(size),
                             buildRecommendations(size),
                           ],
                         ),
@@ -165,7 +149,7 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
       child: Stack(
         children: [
           Image.network(
-           getImageUrl(controller.tvDetail!.posterPath, "media"),
+            getImageUrl(controller.tvDetail!.posterPath, "media"),
             fit: BoxFit.cover,
             height: size.height * 0.55,
             width: size.width,
@@ -267,14 +251,65 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
   }
 
   buildRecommendations(Size size) {
-    return controller.tvDetail!.similar.results.isEmpty ? const SizedBox() : Column(
+    return controller.tvDetail!.similar.results.isEmpty
+        ? const SizedBox()
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Recommendations",
+                style: GoogleFonts.rubik(
+                    fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              verticalGap(16),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Wrap(
+                  spacing: 12,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  direction: Axis.horizontal,
+                  runAlignment: WrapAlignment.start,
+                  crossAxisAlignment: WrapCrossAlignment.start,
+                  runSpacing: 12,
+                  children: List.generate(
+                      controller.tvDetail!.similar.results.length,
+                      (index) => MovieCard(
+                          image: getImageUrl(
+                              controller
+                                  .tvDetail!.similar.results[index].posterPath,
+                              "media"),
+                          name:
+                              controller.tvDetail!.similar.results[index].name,
+                          id: controller.tvDetail!.similar.results[index].id,
+                          mediaType: "tv")),
+                ),
+              ),
+              verticalGap(32),
+            ],
+          );
+  }
+
+  Future<void> fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await controller.fetchTvDetail(widget.id);
+    await fetchSeasonInfo();
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  buildSeasonSection(Size size) {
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Recommendations",
-          style: GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
-        ),
-        verticalGap(16),
+        Text("Seasons",
+            style:
+                GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600)),
+        verticalGap(12),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Wrap(
@@ -285,28 +320,135 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
             crossAxisAlignment: WrapCrossAlignment.start,
             runSpacing: 12,
             children: List.generate(
-                controller.tvDetail!.similar.results.length,
-                (index) => MovieCard(
-                    image: getImageUrl(controller.tvDetail!.similar.results[index].posterPath, "media"),
-                    name: controller.tvDetail!.similar.results[index].name,
-                    id: controller.tvDetail!.similar.results[index].id,
-                    mediaType: "tv")),
+                controller.tvDetail!.seasons.length,
+                (index) => InkWell(
+                      onTap: () => setState(() {
+                        selectedSeason = index;
+                        fetchSeasonInfo();
+                      }),
+                      child: Container(
+                        width: size.width * 0.3,
+                        decoration: BoxDecoration(
+                            color: selectedSeason == index
+                                ? AppColors.primaryColor
+                                : AppColors.cardDarkColor,
+                            borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.all(16),
+                        child: Center(
+                            child: Text(
+                          controller.tvDetail!.seasons[index].name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.rubik(),
+                        )),
+                      ),
+                    )),
           ),
         ),
-        verticalGap(32),
+        verticalGap(16),
+        isLoadingEps ? const LinearProgressIndicator(color: AppColors.primaryColor,) : ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
+          itemCount: showAllEps ? controller.seasonDetail!.episodes.length : controller.seasonDetail!.episodes.length > 10
+              ? 10
+              : controller.seasonDetail!.episodes.length,
+          itemBuilder: (context, index) {
+            var data = controller.seasonDetail!.episodes[index];
+
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    getImageUrl(data.stillPath, "media"),
+                    fit: BoxFit.cover,
+                    height: 80,
+                    width: size.width * 0.3,
+                  ),
+                ),
+                horizontalGap(12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        data.name,
+                        style: GoogleFonts.rubik(fontSize: 18),
+                      ),
+                      verticalGap(8),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                            size: 20,
+                          ),
+                          horizontalGap(4),
+                          Text(data.voteAverage.toStringAsFixed(1),
+                              style: GoogleFonts.rubik(fontSize: 12)),
+                        ],
+                      ),
+                      verticalGap(8),
+                      Text(
+                        data.overview.isEmpty ? "-" : data.overview,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.rubik(
+                            color: AppColors.textSecondaryColor),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Divider(
+                color: AppColors.hintColor,
+              ),
+            );
+          },
+        ),
+        Visibility(
+          visible: (controller.seasonDetail?.episodes.length ?? 0) > 10,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+              onTap: () => setState(() {
+                showAllEps = !showAllEps;
+              }),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Text(showAllEps ? "Show less" : "Show More", style: GoogleFonts.rubik(
+                  color: AppColors.hintColor
+                ),),
+              ),
+            ),
+          ),
+        ),
+        verticalGap(24),
       ],
     );
   }
 
-  Future<void> fetchData() async {
+  Future<void> fetchSeasonInfo() async {
+
     setState(() {
-      isLoading = true;
+      isLoadingEps = true;
     });
 
-    await controller.fetchTvDetail(widget.id);
+    if (controller.tvDetail != null) {
+      await controller.fetchSeasonInfo(
+          controller.tvDetail!.seasons[selectedSeason].seasonNumber,
+          controller.tvDetail!.id);
+    }
 
     setState(() {
-      isLoading = false;
+      isLoadingEps = false;
     });
   }
 }

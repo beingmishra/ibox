@@ -7,7 +7,6 @@ import 'package:ibox/config/helpers/gener_helper.dart';
 import 'package:ibox/config/helpers/general_functions.dart';
 import 'package:ibox/config/theme/app_colors.dart';
 import 'package:ibox/features/home/models/trending_media_response.dart';
-import 'package:ibox/network/url_helper.dart';
 
 class BigSliderCard extends StatelessWidget {
   final TrendingMediaItem data;

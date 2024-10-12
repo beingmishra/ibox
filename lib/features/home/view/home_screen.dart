@@ -10,6 +10,7 @@ import 'package:ibox/features/home/widgets/big_slider_card.dart';
 import 'package:ibox/features/home/widgets/skeleton_home_screen.dart';
 import 'package:ibox/network/url_helper.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -72,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   buildTrendingSlider(Size size) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           height: size.height * 0.65,
@@ -80,6 +82,21 @@ class _HomeScreenState extends State<HomeScreen> {
             children: List.generate(controller.trendingMediaItems.take(7).length, (index) => BigSliderCard(data: controller.trendingMediaItems[index],)),
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: SmoothPageIndicator(
+              controller: pageController,  // PageController
+              count: 7,
+              effect: const ExpandingDotsEffect(
+                dotHeight: 8,
+                dotWidth: 8,
+                activeDotColor: AppColors.primaryColor
+              ),  // your preferred effect
+              onDotClicked: (index){
+              }
+          ),
+        ),
+        verticalGap(12),
         const Divider(
           indent: 16,
           endIndent: 16,
@@ -90,22 +107,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   buildMostPopularMovies(Size size) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "Now Playing (Movies)",
-              style:
-                  GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            Text(
-              "View all",
-              style:
-                  GoogleFonts.rubik(fontSize: 14, color: AppColors.hintColor),
-            ),
-          ],
+        Text(
+          "Now Playing (Movies)",
+          style:
+              GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         verticalGap(16),
         SingleChildScrollView(
@@ -130,22 +137,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   buildTopRatedMovies(Size size) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "Most Popular (Movies)",
-              style:
-                  GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            Text(
-              "View all",
-              style:
-                  GoogleFonts.rubik(fontSize: 14, color: AppColors.hintColor),
-            ),
-          ],
+        Text(
+          "Most Popular (Movies)",
+          style:
+              GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         verticalGap(16),
         SingleChildScrollView(
@@ -170,22 +167,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   buildAiringTodayTV(Size size) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "Airing Today (TV Shows)",
-              style:
-                  GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            Text(
-              "View all",
-              style:
-                  GoogleFonts.rubik(fontSize: 14, color: AppColors.hintColor),
-            ),
-          ],
+        Text(
+          "Airing Today (TV Shows)",
+          style:
+              GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         verticalGap(16),
         SingleChildScrollView(
@@ -210,22 +197,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   buildMostPopularTV(Size size) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "Most Popular (TV Shows)",
-              style:
-                  GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            Text(
-              "View all",
-              style:
-                  GoogleFonts.rubik(fontSize: 14, color: AppColors.hintColor),
-            ),
-          ],
+        Text(
+          "Most Popular (TV Shows)",
+          style:
+              GoogleFonts.rubik(fontSize: 18, fontWeight: FontWeight.w600),
         ),
         verticalGap(16),
         SingleChildScrollView(

@@ -77,30 +77,50 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                       children: List.generate(controller.movieCredits!.cast.length, (index) => InkWell(
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PeopleInfoScreen(id: controller.movieCredits!.cast[index].id,))),
                         child: SizedBox(
-                                  width: 64,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(100),
-                                        child: Image.network(
-                                          getImageUrl(controller.movieCredits!.cast[index].profilePath, "person"),
-                                          height: 64,
-                                          width: 64,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      verticalGap(8),
-                                      Text(controller.movieCredits!.cast[index].name,
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.rubik(fontSize: 14)),
-                                      verticalGap(4),
-                                      Text("(${controller.movieCredits!.cast[index].character})",
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.rubik(fontSize: 14)),
-                                    ],
-                                  ),
+                          width: 80,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              // Cast member's image
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(50), // Circular image with smoother radius
+                                child: Image.network(
+                                  getImageUrl(controller.movieCredits!.cast[index].profilePath, "person"),
+                                  height: 80,
+                                  width: 80,
+                                  fit: BoxFit.cover,
                                 ),
+                              ),
+                              verticalGap(8),
+
+                              // Cast member's name
+                              Text(
+                                controller.movieCredits!.cast[index].name,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.rubik(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                                maxLines: 2, // Prevent overflow
+                                overflow: TextOverflow.ellipsis, // Handle long names
+                              ),
+                              verticalGap(4),
+
+                              // Character name
+                              Text(
+                                "(${controller.movieCredits!.cast[index].character})",
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.rubik(
+                                  fontSize: 12,
+                                  color: Colors.grey, // Muted color for character role
+                                ),
+                                maxLines: 1, // Prevent overflow
+                                overflow: TextOverflow.ellipsis, // Handle long names
+                              ),
+                            ],
+                          ),
+                        ),
                       )),
                     ),
                   ),
@@ -222,7 +242,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   }
 
   buildRecommendations(Size size) {
-    return Column(
+    return controller.movieRecommendations == null ? const SizedBox() : Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(

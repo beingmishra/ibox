@@ -37,7 +37,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         unselectedItemColor: AppColors.hintColor,
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
+            BottomNavigationBarItem(icon: Icon(Icons.search), label: "Explore"),
             BottomNavigationBarItem(icon: Icon(Icons.info), label: "Info"),
           ],
       ),

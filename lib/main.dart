@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:ibox/config/theme/app_colors.dart';
 import 'package:ibox/config/theme/app_theme.dart';
 import 'package:ibox/features/dashboard/views/dashboard_screen.dart';
 
@@ -21,8 +22,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     const SystemUiOverlayStyle(
-      statusBarColor: Colors.white,
-      systemNavigationBarColor: Colors.white,
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: AppColors.scaffoldDarkColor,
       systemNavigationBarDividerColor: Colors.black,
       systemNavigationBarIconBrightness: Brightness.dark,
     );

@@ -9,9 +9,9 @@ class SkeletonHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
-    return Skeletonizer.zone(
-        child: SingleChildScrollView(
-          child: Column(
+    return SingleChildScrollView(
+      child: Skeletonizer.zone(
+        child: Column(
             children: [
               SizedBox(
                 height: size.height * 0.65,
@@ -161,7 +161,7 @@ class SkeletonHomeScreen extends StatelessWidget {
               )
             ],
           ),
-        )
+      ),
     );
   }
 }

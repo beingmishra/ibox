@@ -1,29 +1,29 @@
 // To parse this JSON data, do
 //
-//     final searchTvResponseModel = searchTvResponseModelFromJson(jsonString);
+//     final genreTvResponseModel = genreTvResponseModelFromJson(jsonString);
 
 import 'dart:convert';
 
-SearchTvResponseModel searchTvResponseModelFromJson(String str) => SearchTvResponseModel.fromJson(json.decode(str));
+GenreTvResponseModel genreTvResponseModelFromJson(String str) => GenreTvResponseModel.fromJson(json.decode(str));
 
-String searchTvResponseModelToJson(SearchTvResponseModel data) => json.encode(data.toJson());
+String genreTvResponseModelToJson(GenreTvResponseModel data) => json.encode(data.toJson());
 
-class SearchTvResponseModel {
+class GenreTvResponseModel {
   int page;
-  List<SearchedTv> results;
+  List<GenreTv> results;
   int totalPages;
   int totalResults;
 
-  SearchTvResponseModel({
+  GenreTvResponseModel({
     required this.page,
     required this.results,
     required this.totalPages,
     required this.totalResults,
   });
 
-  factory SearchTvResponseModel.fromJson(Map<String, dynamic> json) => SearchTvResponseModel(
+  factory GenreTvResponseModel.fromJson(Map<String, dynamic> json) => GenreTvResponseModel(
     page: json["page"],
-    results: List<SearchedTv>.from(json["results"].map((x) => SearchedTv.fromJson(x))),
+    results: List<GenreTv>.from(json["results"].map((x) => GenreTv.fromJson(x))),
     totalPages: json["total_pages"],
     totalResults: json["total_results"],
   );
@@ -36,7 +36,7 @@ class SearchTvResponseModel {
   };
 }
 
-class SearchedTv {
+class GenreTv {
   bool adult;
   String? backdropPath;
   List<int> genreIds;
@@ -47,12 +47,12 @@ class SearchedTv {
   String overview;
   double popularity;
   String? posterPath;
-  DateTime? firstAirDate;
+  DateTime firstAirDate;
   String name;
   double voteAverage;
   int voteCount;
 
-  SearchedTv({
+  GenreTv({
     required this.adult,
     required this.backdropPath,
     required this.genreIds,
@@ -69,7 +69,7 @@ class SearchedTv {
     required this.voteCount,
   });
 
-  factory SearchedTv.fromJson(Map<String, dynamic> json) => SearchedTv(
+  factory GenreTv.fromJson(Map<String, dynamic> json) => GenreTv(
     adult: json["adult"],
     backdropPath: json["backdrop_path"],
     genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
@@ -80,7 +80,7 @@ class SearchedTv {
     overview: json["overview"],
     popularity: json["popularity"]?.toDouble(),
     posterPath: json["poster_path"],
-    firstAirDate: (json["first_air_date"] ?? "").isEmpty ? null : DateTime.parse(json["first_air_date"]),
+    firstAirDate: DateTime.parse(json["first_air_date"]),
     name: json["name"],
     voteAverage: json["vote_average"]?.toDouble(),
     voteCount: json["vote_count"],
@@ -97,7 +97,7 @@ class SearchedTv {
     "overview": overview,
     "popularity": popularity,
     "poster_path": posterPath,
-    "first_air_date": "${firstAirDate?.year.toString().padLeft(4, '0')}-${firstAirDate?.month.toString().padLeft(2, '0')}-${firstAirDate?.day.toString().padLeft(2, '0')}",
+    "first_air_date": "${firstAirDate.year.toString().padLeft(4, '0')}-${firstAirDate.month.toString().padLeft(2, '0')}-${firstAirDate.day.toString().padLeft(2, '0')}",
     "name": name,
     "vote_average": voteAverage,
     "vote_count": voteCount,
