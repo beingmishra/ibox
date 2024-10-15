@@ -33,6 +33,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: AppTheme.themeData,
+      debugShowCheckedModeBanner: false,
       home: const DashboardScreen(),
     );
   }

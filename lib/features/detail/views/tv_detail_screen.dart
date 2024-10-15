@@ -91,40 +91,47 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
                                                               .cast[index]
                                                               .id))),
                                           child: SizedBox(
-                                            width: 64,
+                                            width: 80,
                                             child: Column(
                                               mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
                                               children: [
+                                                // Cast member's image
                                                 ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          100),
+                                                  borderRadius: BorderRadius.circular(50), // Circular image with smoother radius
                                                   child: Image.network(
-                                                    getImageUrl(
-                                                        controller
-                                                            .tvDetail!
-                                                            .credits
-                                                            .cast[index]
-                                                            .profilePath,
-                                                        "person"),
-                                                    height: 64,
-                                                    width: 64,
+                                                    getImageUrl(controller.tvDetail!.credits.cast[index].profilePath, "person"),
+                                                    height: 80,
+                                                    width: 80,
                                                     fit: BoxFit.cover,
                                                   ),
                                                 ),
                                                 verticalGap(8),
+
+                                                // Cast member's name
                                                 Text(
-                                                    controller.tvDetail!.credits
-                                                        .cast[index].name,
-                                                    textAlign: TextAlign.center,
-                                                    style: GoogleFonts.rubik(
-                                                        fontSize: 14)),
+                                                  controller.tvDetail!.credits.cast[index].name,
+                                                  textAlign: TextAlign.center,
+                                                  style: GoogleFonts.rubik(
+                                                    fontSize: 14,
+                                                    color: Colors.white,
+                                                  ),
+                                                  maxLines: 2, // Prevent overflow
+                                                  overflow: TextOverflow.ellipsis, // Handle long names
+                                                ),
                                                 verticalGap(4),
+
+                                                // Character name
                                                 Text(
-                                                    "(${controller.tvDetail!.credits.cast[index].character})",
-                                                    textAlign: TextAlign.center,
-                                                    style: GoogleFonts.rubik(
-                                                        fontSize: 14)),
+                                                  "(${controller.tvDetail!.credits.cast[index].character})",
+                                                  textAlign: TextAlign.center,
+                                                  style: GoogleFonts.rubik(
+                                                    fontSize: 12,
+                                                    color: Colors.grey, // Muted color for character role
+                                                  ),
+                                                  maxLines: 1, // Prevent overflow
+                                                  overflow: TextOverflow.ellipsis, // Handle long names
+                                                ),
                                               ],
                                             ),
                                           ),

@@ -24,7 +24,7 @@ class TvDetailResponseModel {
   DateTime lastAirDate;
   TEpisodeToAir lastEpisodeToAir;
   String name;
-  TEpisodeToAir nextEpisodeToAir;
+  TEpisodeToAir? nextEpisodeToAir;
   List<Network> networks;
   int numberOfEpisodes;
   int numberOfSeasons;
@@ -99,7 +99,7 @@ class TvDetailResponseModel {
     lastAirDate: DateTime.parse(json["last_air_date"]),
     lastEpisodeToAir: TEpisodeToAir.fromJson(json["last_episode_to_air"]),
     name: json["name"],
-    nextEpisodeToAir: TEpisodeToAir.fromJson(json["next_episode_to_air"]),
+    nextEpisodeToAir: json["next_episode_to_air"] == null ? null : TEpisodeToAir.fromJson(json["next_episode_to_air"]),
     networks: List<Network>.from(json["networks"].map((x) => Network.fromJson(x))),
     numberOfEpisodes: json["number_of_episodes"],
     numberOfSeasons: json["number_of_seasons"],
@@ -137,7 +137,7 @@ class TvDetailResponseModel {
     "last_air_date": "${lastAirDate.year.toString().padLeft(4, '0')}-${lastAirDate.month.toString().padLeft(2, '0')}-${lastAirDate.day.toString().padLeft(2, '0')}",
     "last_episode_to_air": lastEpisodeToAir.toJson(),
     "name": name,
-    "next_episode_to_air": nextEpisodeToAir.toJson(),
+    "next_episode_to_air": nextEpisodeToAir?.toJson(),
     "networks": List<dynamic>.from(networks.map((x) => x.toJson())),
     "number_of_episodes": numberOfEpisodes,
     "number_of_seasons": numberOfSeasons,

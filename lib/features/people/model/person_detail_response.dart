@@ -17,12 +17,12 @@ class PersonDetailResponseModel {
   int gender;
   String? homepage;
   int id;
-  String imdbId;
+  String? imdbId;
   String knownForDepartment;
   String name;
   String? placeOfBirth;
   double popularity;
-  String profilePath;
+  String? profilePath;
   Images images;
   MovieCredits movieCredits;
   TvCredits tvCredits;
@@ -289,7 +289,7 @@ class TvCreditsCast {
   int voteCount;
   String? character;
   String creditId;
-  int episodeCount;
+  int? episodeCount;
   String? department;
   String? job;
 
@@ -310,7 +310,7 @@ class TvCreditsCast {
     required this.voteCount,
     this.character,
     required this.creditId,
-    required this.episodeCount,
+    this.episodeCount,
     this.department,
     this.job,
   });

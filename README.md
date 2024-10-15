@@ -1,8 +1,8 @@
 <div align="center">
 
-# **ibox**
+<img src="https://raw.githubusercontent.com/beingmishra/ibox/refs/heads/main/assets/images/ibox_logo.png" align="center" style="width: 100%" />
 
-ibox is a TMDB database based movie explorer app
+iBox is an open-source app that uses the TMDB API to provide users with detailed information about movies and TV shows. With iBox, you can explore the latest releases, popular titles, and discover trending content. The app offers rich details about each movie or show, including cast information, plot summaries, ratings, and more, all in a clean and user-friendly interface. Built to deliver an engaging and informative experience, iBox is perfect for movie enthusiasts who want easy access to up-to-date entertainment data.
 
 <br/>
 
@@ -14,6 +14,16 @@ ibox is a TMDB database based movie explorer app
 <img src="https://img.shields.io/github/repo-size/beingmishra/ibox?style=for-the-badge&logo=dropbox&color=7dc4e4&logoColor=D9E0EE&labelColor=302D41"/>
 
 <br/>
+
+</div>
+
+<div align="center">
+
+  <img src="https://raw.githubusercontent.com/beingmishra/ibox/refs/heads/main/screenshots/1.png" style="width: 18%; margin: 5px;" />
+  <img src="https://raw.githubusercontent.com/beingmishra/ibox/refs/heads/main/screenshots/2.png" style="width: 18%; margin: 5px;" />
+  <img src="https://raw.githubusercontent.com/beingmishra/ibox/refs/heads/main/screenshots/3.png" style="width: 18%; margin: 5px;" />
+  <img src="https://raw.githubusercontent.com/beingmishra/ibox/refs/heads/main/screenshots/4.png" style="width: 18%; margin: 5px;" />
+  <img src="https://raw.githubusercontent.com/beingmishra/ibox/refs/heads/main/screenshots/5.png" style="width: 18%; margin: 5px;" />
 
 </div>
 
