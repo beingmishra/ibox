@@ -11,14 +11,14 @@ String movieDetailResponseModelToJson(MovieDetailResponseModel data) => json.enc
 class MovieDetailResponseModel {
   bool adult;
   String backdropPath;
-  BelongsToCollection belongsToCollection;
+  BelongsToCollection? belongsToCollection;
   int budget;
   List<GenreObj> genres;
   String homepage;
   int id;
   String imdbId;
-  List<OriginCountry> originCountry;
-  OriginalLanguage originalLanguage;
+  List<String> originCountry;
+  String originalLanguage;
   String originalTitle;
   String overview;
   double popularity;
@@ -74,14 +74,14 @@ class MovieDetailResponseModel {
   factory MovieDetailResponseModel.fromJson(Map<String, dynamic> json) => MovieDetailResponseModel(
     adult: json["adult"],
     backdropPath: json["backdrop_path"],
-    belongsToCollection: BelongsToCollection.fromJson(json["belongs_to_collection"]),
+    belongsToCollection: json["belongs_to_collection"] == null ? null : BelongsToCollection.fromJson(json["belongs_to_collection"]),
     budget: json["budget"],
     genres: List<GenreObj>.from(json["genres"].map((x) => GenreObj.fromJson(x))),
     homepage: json["homepage"],
     id: json["id"],
     imdbId: json["imdb_id"],
-    originCountry: List<OriginCountry>.from(json["origin_country"].map((x) => originCountryValues.map[x]!)),
-    originalLanguage: originalLanguageValues.map[json["original_language"]]!,
+    originCountry: List<String>.from(json["origin_country"].map((x) => x)),
+    originalLanguage: json["original_language"],
     originalTitle: json["original_title"],
     overview: json["overview"],
     popularity: json["popularity"]?.toDouble(),
@@ -106,14 +106,14 @@ class MovieDetailResponseModel {
   Map<String, dynamic> toJson() => {
     "adult": adult,
     "backdrop_path": backdropPath,
-    "belongs_to_collection": belongsToCollection.toJson(),
+    "belongs_to_collection": belongsToCollection?.toJson(),
     "budget": budget,
     "genres": List<dynamic>.from(genres.map((x) => x.toJson())),
     "homepage": homepage,
     "id": id,
     "imdb_id": imdbId,
-    "origin_country": List<dynamic>.from(originCountry.map((x) => originCountryValues.reverse[x])),
-    "original_language": originalLanguageValues.reverse[originalLanguage],
+    "origin_country": List<dynamic>.from(originCountry.map((x) => x)),
+    "original_language": originalLanguage,
     "original_title": originalTitle,
     "overview": overview,
     "popularity": popularity,
@@ -139,8 +139,8 @@ class MovieDetailResponseModel {
 class BelongsToCollection {
   int id;
   String name;
-  String posterPath;
-  String backdropPath;
+  String? posterPath;
+  String? backdropPath;
 
   BelongsToCollection({
     required this.id,
@@ -300,27 +300,11 @@ class GenreObj {
   };
 }
 
-enum OriginCountry {
-  US
-}
-
-final originCountryValues = EnumValues({
-  "US": OriginCountry.US
-});
-
-enum OriginalLanguage {
-  EN
-}
-
-final originalLanguageValues = EnumValues({
-  "en": OriginalLanguage.EN
-});
-
 class ProductionCompany {
   int id;
   String? logoPath;
   String name;
-  OriginCountry originCountry;
+  String originCountry;
 
   ProductionCompany({
     required this.id,
@@ -333,19 +317,19 @@ class ProductionCompany {
     id: json["id"],
     logoPath: json["logo_path"],
     name: json["name"],
-    originCountry: originCountryValues.map[json["origin_country"]]!,
+    originCountry: json["origin_country"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "logo_path": logoPath,
     "name": name,
-    "origin_country": originCountryValues.reverse[originCountry],
+    "origin_country": originCountry,
   };
 }
 
 class ProductionCountry {
-  OriginCountry iso31661;
+  String iso31661;
   String name;
 
   ProductionCountry({
@@ -354,12 +338,12 @@ class ProductionCountry {
   });
 
   factory ProductionCountry.fromJson(Map<String, dynamic> json) => ProductionCountry(
-    iso31661: originCountryValues.map[json["iso_3166_1"]]!,
+    iso31661: json["iso_3166_1"],
     name: json["name"],
   );
 
   Map<String, dynamic> toJson() => {
-    "iso_3166_1": originCountryValues.reverse[iso31661],
+    "iso_3166_1": iso31661,
     "name": name,
   };
 }
@@ -501,11 +485,11 @@ class Videos {
 }
 
 class VideosResult {
-  OriginalLanguage iso6391;
-  OriginCountry iso31661;
+  String iso6391;
+  String iso31661;
   String name;
   String key;
-  Site site;
+  String site;
   int size;
   String type;
   bool official;
@@ -526,11 +510,11 @@ class VideosResult {
   });
 
   factory VideosResult.fromJson(Map<String, dynamic> json) => VideosResult(
-    iso6391: originalLanguageValues.map[json["iso_639_1"]]!,
-    iso31661: originCountryValues.map[json["iso_3166_1"]]!,
+    iso6391: json["iso_639_1"],
+    iso31661: json["iso_3166_1"],
     name: json["name"],
     key: json["key"],
-    site: siteValues.map[json["site"]]!,
+    site: json["site"],
     size: json["size"],
     type: json["type"],
     official: json["official"],
@@ -539,11 +523,11 @@ class VideosResult {
   );
 
   Map<String, dynamic> toJson() => {
-    "iso_639_1": originalLanguageValues.reverse[iso6391],
-    "iso_3166_1": originCountryValues.reverse[iso31661],
+    "iso_639_1": iso6391,
+    "iso_3166_1": iso31661,
     "name": name,
     "key": key,
-    "site": siteValues.reverse[site],
+    "site": site,
     "size": size,
     "type": type,
     "official": official,
@@ -551,14 +535,6 @@ class VideosResult {
     "id": id,
   };
 }
-
-enum Site {
-  YOU_TUBE
-}
-
-final siteValues = EnumValues({
-  "YouTube": Site.YOU_TUBE
-});
 
 class EnumValues<T> {
   Map<String, T> map;

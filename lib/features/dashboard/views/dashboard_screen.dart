@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ibox/config/theme/app_colors.dart';
 import 'package:ibox/features/home/view/home_screen.dart';
+import 'package:ibox/features/info/views/info_screen.dart';
 import 'package:ibox/features/search/view/search_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -16,7 +17,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   var screens = [
     const HomeScreen(),
     const SearchScreen(),
-    Container()
+    const InfoScreen()
   ];
 
   @override
