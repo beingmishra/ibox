@@ -195,7 +195,7 @@ class _TvDetailScreenState extends State<TvDetailScreen> {
 
                       if(item != null) {
                         Navigator.push(context, MaterialPageRoute(builder: (
-                            context) => YoutubePlayerScreen(videoId: item.key ?? "")));
+                            context) => YoutubePlayerScreen(videoId: item.key)));
                       }else{
                         showNoTrailerDialog(context);
                       }
